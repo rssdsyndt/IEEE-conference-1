@@ -18,6 +18,20 @@
 % ---------------------------------------------------------------
 \newcommand{\PH}[1]{\textcolor{red}{[\,#1\,]}}
 
+% ---------------------------------------------------------------
+% CLICKABLE CROSS-REFERENCES
+% hyperref must be loaded LAST. It turns every \cite, \ref and DOI
+% into a live link: clicking [2] jumps to reference 2.
+% For camera-ready submission, swap the options below for
+%   \usepackage[hidelinks]{hyperref}
+% which keeps the links active but prints them in plain black.
+% ---------------------------------------------------------------
+\usepackage[colorlinks=true,
+            linkcolor=[rgb]{0,0,0.6},
+            citecolor=[rgb]{0,0,0.6},
+            urlcolor=[rgb]{0,0,0.6},
+            breaklinks=true]{hyperref}
+
 \begin{document}
 
 \title{The Effect of XAI Explanation Types on User Trust\\ and Purchase Intention in a Conversational\\ Recommender System for the Perfume Domain}
@@ -408,11 +422,268 @@ Outcome & Type-specific trust effects & Domain moderates type & No subjective ef
 % ===============================================================
 \section{System Design}
 \label{sec:system}
-\PH{Section III to be written next.}
 
+\subsection{Architecture Overview}
+
+The experimental platform is a conversational recommender agent for perfume,
+referred to here as the system. Its architecture separates two responsibilities that
+are frequently fused in LLM-based recommenders: \textit{language} and
+\textit{recommendation}. A large language model, GPT-4o-mini, conducts the dialogue,
+extracts preferences, and verbalises the justification. A separate backend, a
+conversational-recommendation hybrid knowledge graph embedding (CR-HKGE) module,
+selects the recommended items. Fig.~\ref{fig:arch} shows the arrangement.
+
+\begin{figure}[htbp]
+\centerline{\PH{Fig. 1 --- architecture diagram to be inserted (fig1.png placeholder)}}
+\caption{System architecture. The explanation mode is switched at the
+system-prompt layer only; the CR-HKGE backend and therefore the recommended item
+set are identical across the three conditions.}
+\label{fig:arch}
+\end{figure}
+
+Two properties of this arrangement matter for the validity of the experiment.
+
+First, \textit{the backend is a knowledge graph embedding model, not a
+retrieval-augmented generation pipeline}. Recommendations are produced by scoring
+candidate items in a learned embedding space over a structured perfume knowledge
+graph comprising \PH{number of entities, relations and items in the KG; source:
+dataset\_aromatique\_KG}, rather than by retrieving and summarising documents. The
+distinction is consequential: under RAG the textual material returned by retrieval
+would itself vary with the prompt, confounding the manipulation, whereas under
+knowledge graph embedding the candidate set is determined by the graph and is
+invariant to how the system is later asked to phrase its justification. The design
+follows the family of knowledge-graph-based recommenders that aggregate collaborative
+and semantic signals through graph attention \cite{litois2023}, \cite{elahi2024},
+including work that extends such graphs to conversational settings in order to capture
+implicit user states from dialogue context \cite{yang2025}.
+
+Second, \textit{the LLM acts as an interface rather than as the recommender}. This
+mirrors the agent pattern in which an LLM serves as the reasoning layer and
+domain-specific recommendation models serve as tools \cite{huang2023}, an arrangement
+motivated by the observation that LLMs lack domain-specific item catalogues and are
+prone to proposing items that do not exist in the target catalogue. Because item
+selection is delegated to the backend, changing the explanation mode cannot change
+\textit{what} is recommended, only \textit{how} the recommendation is justified. This
+is the mechanism by which the study isolates explanation type as the sole
+manipulated variable.
+
+\subsection{Explanation Conditions}
+
+Explanation mode is set by system-prompt conditioning at the start of each session,
+with no fine-tuning of the underlying model. This follows the prompting paradigm,
+one of the three paradigms, alongside pre-training and fine-tuning, by which LLMs are
+adapted to recommendation tasks \cite{zhao2024}. The practical advantage is that the
+independent variable becomes cheap to manipulate and straightforward for other
+researchers to replicate.
+
+Each participant receives the same three recommended perfumes from the backend and one
+of three justification styles. The three conditions instantiate three distinct
+justification logics, summarised in Table~\ref{tab:conditions}.
+
+\begin{table*}[htbp]
+\caption{The Three Explanation Conditions}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}p{0.9cm}p{2.6cm}p{2.3cm}p{4.2cm}p{5.2cm}@{}}
+\toprule
+& \textbf{Condition} & \textbf{Justification logic} & \textbf{Explanation content} & \textbf{Illustrative style} \\
+\midrule
+A & Feature-based & Attributive: \textit{what it is made of} & Olfactory family and dominant accords & ``This fragrance sits in the woody-aromatic family, with a dominant bergamot opening over a vetiver base.'' \\
+B & Narrative-based & Affective: \textit{how it will feel to you} & Emotion, occasion, and identity & ``This scent is like late afternoon in an old town, warm but never excessive, for someone calm who still leaves an impression.'' \\
+C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & Explicit differences among the three recommended items & ``Compared with X, which is sweeter, and Y, which is considerably heavier, this one is the most balanced.'' \\
+\bottomrule
+\end{tabular}
+\label{tab:conditions}
+\end{center}
+\footnotesize\textit{Note.} Illustrative styles are representative renderings.
+\PH{Replace with verbatim excerpts from real session transcripts, one per condition,
+and place the three full system prompts in an appendix.}
+\end{table*}
+
+Conditions A and C have established counterparts in the XAI literature. Condition A
+corresponds to attribute-based or feature-importance explanation, the most extensively
+studied form and the one shown to yield higher trust than counterfactual explanation
+among non-expert users \cite{brito2023}. Condition C corresponds to contrastive
+explanation, for which a two-level taxonomy of generation methods has been established
+\cite{stepin2021}, and which has been shown to improve the accuracy of users' own
+decisions relative to causal explanation \cite{celar2023}.
+
+Condition B is the novel element. The CRS and anthropomorphism literatures examine
+conversational \textit{style} along the warmth-competence axis \cite{libaoku2024},
+\cite{cheng2022}, but treat explanation \textit{content} as fixed. Condition B instead
+makes affective content the substance of the justification: it supplies no
+compositional facts and no comparative frame, only resonance. It is the condition
+closest in spirit to the user-based explanations that were found more effective in
+hedonic domains \cite{chen2024}, while differing in one respect examined in
+Section~\ref{sec:discussion}: user-based explanations convey social proof, whereas
+purely narrative explanations convey none.
+
+\subsection{Conversational Interface}
+
+A session proceeds in four stages: greeting and task framing; preference elicitation
+through open dialogue; presentation of three recommended perfumes together with the
+condition-appropriate explanation; and the post-session questionnaire. Preference
+elicitation is conducted in natural language rather than through forms or buttons,
+consistent with the low-guidance, low-restriction end of the elicitation spectrum
+\cite{ziegfeld2025}. Attributes elicited during dialogue include
+\PH{list the preference attributes the system elicits, e.g. occasion, intensity,
+preferred notes, gender presentation, budget}. Dialogues ran for
+\PH{mean number of turns and mean session duration}.
+
+% ===============================================================
 \section{Method}
 \label{sec:method}
-\PH{Section IV to be written next.}
+
+\subsection{Experimental Design}
+
+The study uses a single-factor between-subjects design with three levels of
+explanation type (A: feature-based; B: narrative-based; C: comparative-based).
+Assignment to condition was determined by a session counter, producing balanced
+allocation of 30 participants per condition.
+
+A between-subjects design was chosen over a within-subjects alternative deliberately.
+Were a participant to experience all three explanation modes, the comparison would
+become explicit to them, inviting demand characteristics and carryover in how the
+later modes are judged. The cost of this choice is reduced statistical power,
+particularly for the interaction test reported in Section~\ref{sec:results}, and this
+cost is revisited in the limitations \PH{cite a standard experimental-design reference
+here, e.g. Shadish, Cook \& Campbell; not among the supplied source PDFs, verify
+independently}.
+
+\subsection{Participants}
+
+Ninety participants completed the study, 30 in each condition. Familiarity with
+perfume was self-reported in three categories and dichotomised for analysis:
+respondents identifying as beginners were coded \textit{novice} (n = 30), while those
+identifying as enthusiasts or collectors were coded \textit{enthusiast} (n = 60).
+
+The dichotomisation is justified on construct grounds rather than convenience. What
+distinguishes the groups for the purposes of this study is not intensity of interest
+but command of olfactory vocabulary. Enthusiasts and collectors alike understand terms
+such as accord, sillage, and top, heart, and base notes; beginners generally do not.
+Because condition A rests entirely on that vocabulary, the boundary that matters falls
+between beginners and everyone else. The distribution across the three original
+categories was \PH{n for beginner / enthusiast / collector}.
+
+Familiarity was distributed evenly across conditions
+\PH{chi-square = 1.20, p = 0.549 --- reported in the project notes but the
+corresponding JASP contingency table and test output are not yet available; re-run and
+insert exact cell counts per condition}, which supports the interpretation that
+differences between conditions are not attributable to imbalance in sample
+composition.
+
+Demographic characteristics beyond familiarity, specifically age and gender, were not
+recorded. The consequences of this are stated in the limitations.
+\PH{Ethics approval and informed consent statement --- specify the approving body and
+reference number, or state the institutional procedure followed.}
+
+\subsection{Measures}
+
+Four constructs were measured with two items each on five-point Likert scales, giving
+eight items in total. Trust items were adapted from the trusting-beliefs tradition
+\cite{mcknight2002}; purchase intention and satisfaction items were adapted from the
+ResQue framework for user-centric evaluation of recommender systems \cite{pu2012}; and
+usefulness items were adapted from the technology acceptance tradition
+\cite{davis1989}. Table~\ref{tab:items} lists the items.
+
+\begin{table*}[htbp]
+\caption{Measurement Instrument}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}p{1.0cm}p{3.0cm}p{9.6cm}p{2.2cm}@{}}
+\toprule
+\textbf{Code} & \textbf{Construct} & \textbf{Item} & \textbf{Adapted from} \\
+\midrule
+T1 & Perceived trust & Overall, I believe the three recommended perfumes match my preferences. & \cite{mcknight2002} \\
+T2 & Perceived trust & The chatbot's explanation convinces me that the system understands my needs. & \cite{mcknight2002} \\
+PI1 & Purchase intention & Having read the chatbot's explanation, I am interested in buying one of the recommended perfumes. & \cite{pu2012} \\
+PI2 & Purchase intention & I would most likely consider buying this perfume after this session. & \cite{pu2012} \\
+U1 & Perceived usefulness & The chatbot's explanation helps me understand why this perfume suits me. & \cite{davis1989} \\
+U2 & Perceived usefulness & The chatbot's explanation is useful in supporting my purchase decision. & \cite{davis1989} \\
+S1 & User satisfaction & Overall, I am satisfied with the experience of using this chatbot. & \cite{pu2012} \\
+S2 & User satisfaction & I would recommend this chatbot to others who want to choose a perfume. & \cite{pu2012} \\
+\midrule
+--- & Sensory access & Have you already smelled the recommended product? & --- \\
+\bottomrule
+\end{tabular}
+\label{tab:items}
+\end{center}
+\footnotesize\textit{Note.} All items were administered in Indonesian; the wordings
+above are translations. \PH{Response format of the sensory-access item (binary,
+ordinal, or Likert) needs to be specified.}
+\end{table*}
+
+One additional item, labelled \texttt{scent\_trial}, recorded whether the participant
+had actually smelled the recommended product. It is important to be precise about what
+this item measures: it is a record of \textit{sensory access already obtained}, not a
+statement of intention to obtain it. It therefore functions as an indicator of whether
+the participant had information the interface could not supply, and is treated as
+exploratory throughout.
+
+\subsection{Procedure}
+
+Participants were greeted and briefed on the task, interacted with the system until
+three recommendations and their accompanying explanation were delivered, and then
+completed the questionnaire. Participants were not told that explanation style was
+under investigation, nor that other versions of the system existed.
+\PH{Specify: recruitment channel, setting (remote or supervised), whether the session
+was timed, and any compensation.}
+
+\subsection{Manipulation Check}
+
+To verify that the three conditions were distinguishable from the transcripts alone, a
+subsample of 30 session transcripts, 10 per condition, was coded independently by
+three sources: the ground-truth condition assignment recorded by the system
+(\textit{actual}), a coding by the researcher (\textit{self}), and a coding by an
+independent rater blind to condition assignment (\textit{rater}). Agreement was
+quantified with Cohen's kappa and interpreted against conventional thresholds
+\PH{cite Landis \& Koch (1977) for kappa interpretation; not among the supplied source
+PDFs, verify independently}.
+
+The researcher's dual role as both experimenter and coder is acknowledged explicitly.
+Because self-coding cannot be considered blind, the evidentiary weight of the
+manipulation check rests on the independent rater, and both the rater-based and the
+self-based coefficients are reported separately in Section~\ref{sec:results} rather
+than averaged into a single figure.
+
+\subsection{Analysis Plan}
+
+\subsubsection{Scale reliability}
+Cronbach's alpha is not appropriate for two-item scales, where it is downward-biased
+and unstable. Reliability was therefore assessed with the Spearman-Brown coefficient,
+equivalent to the split-half coefficient for scales of this length
+\PH{cite Eisinga, Grotenhuis \& Pelzer (2013) for the two-item reliability argument;
+not among the supplied source PDFs, verify volume, pages and DOI independently}.
+Average inter-item correlations are reported alongside the coefficients, since with
+two items the coefficient is a direct function of a single correlation and the
+correlation is the more interpretable quantity.
+
+\subsubsection{Choice of non-parametric tests}
+Shapiro-Wilk tests indicated departures from normality in several condition cells, and
+Levene's test indicated heterogeneity of variance for perceived trust. Rank-based
+procedures were therefore adopted for hypothesis testing: Kruskal-Wallis for
+comparisons across the three conditions, Dunn's test with Holm correction for pairwise
+comparisons, Spearman's rho for association, and the Wilcoxon signed-rank test for
+comparisons against a fixed reference value. Parametric analyses of variance were also
+computed and are reported for reference, but inference rests on the rank-based results.
+
+\subsubsection{Effect size}
+For Kruskal-Wallis, the epsilon-squared statistic was computed as
+$\varepsilon^{2} = H/(n-1)$, the rank-based analogue of eta-squared. Effect sizes are
+reported for every omnibus test, since a p-value indicates only that an effect exists
+whereas $\varepsilon^{2}$ indicates its magnitude. For pairwise comparisons, the
+rank-biserial correlation is reported.
+
+\subsubsection{Moderation}
+The moderation hypothesis was tested with a two-way analysis of variance crossing
+condition with dichotomised familiarity. This introduces an acknowledged inconsistency:
+the main analyses are rank-based because normality was violated, whereas the moderation
+test is parametric. The reason is practical rather than principled, in that no
+comparably established rank-based test exists for a two-factor interaction. The
+inconsistency is flagged here rather than left for the reader to discover, and the
+result is interpreted with corresponding caution.
+
+All analyses were conducted in JASP \PH{version number}.
 
 \section{Results}
 \label{sec:results}
@@ -570,6 +841,36 @@ L. Celar and R. M. J. Byrne, ``How people reason with counterfactual and causal
 explanations for artificial intelligence decisions in familiar and unfamiliar
 domains,'' \textit{Memory \& Cognition}, vol. 51, pp. 1481--1496, 2023,
 doi: 10.3758/s13421-023-01407-5.
+
+\bibitem{litois2023}
+Y. Li, L. Hou, and J. Li, ``Preference-aware graph attention networks for
+cross-domain recommendations with collaborative knowledge graph,'' \textit{ACM Trans.
+Inf. Syst.}, vol. 41, no. 3, Art. 80, Feb. 2023, doi: 10.1145/3576921.
+
+\bibitem{elahi2024}
+E. Elahi \textit{et al.}, ``Knowledge graph enhanced contextualized attention-based
+network for responsible user-specific recommendation,'' \textit{ACM Trans. Intell.
+Syst. Technol.}, vol. 15, no. 4, Art. 83, Jul. 2024.
+
+\bibitem{yang2025}
+H. Yang, D. Kim, G. Park, K. Yeom, and K.-H. Lee, ``CoreSense: Social commonsense
+knowledge-aware context refinement for conversational recommender system,''
+\textit{IEEE Trans. Knowl. Data Eng.}, vol. 37, no. 4, pp. 1702--1712, Apr. 2025,
+doi: 10.1109/TKDE.2025.3536464.
+
+\bibitem{huang2023}
+X. Huang, J. Lian, Y. Lei, J. Yao, D. Lian, and X. Xie, ``Recommender AI agent:
+Integrating large language models for interactive recommendations,''
+\PH{venue --- the supplied source PDF carries no publication venue; confirm whether to
+cite the arXiv preprint or the journal version, and add volume, pages and DOI},
+2023.
+
+\bibitem{zhao2024}
+Z. Zhao \textit{et al.}, ``Recommender systems in the era of large language models
+(LLMs),'' \textit{IEEE Trans. Knowl. Data Eng.},
+\PH{vol., no., pp. --- the supplied source PDF is the submission preprint; confirm the
+published volume, issue and page range. Note the first author is Zhao, not Fan},
+2024.
 
 \end{thebibliography}
 
