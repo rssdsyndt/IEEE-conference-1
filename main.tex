@@ -447,13 +447,19 @@ Two properties of this arrangement matter for the interpretation of the experime
 
 First, \textit{the backend is a knowledge graph embedding model, not a
 retrieval-augmented generation pipeline}. Recommendations are produced by scoring
-candidate items in a learned embedding space over a structured perfume knowledge
-graph comprising \PH{number of entities, relations and items in the knowledge graph},
-rather than by retrieving and summarising documents. The design follows the family of
-knowledge-graph-based recommenders that aggregate collaborative and semantic signals
-through graph attention \cite{litois2023}, \cite{elahi2024}, including work that
-extends such graphs to conversational settings in order to capture implicit user
-states from dialogue context \cite{yang2025}.
+candidate items in a learned embedding space over a structured perfume knowledge graph,
+rather than by retrieving and summarising documents. The graph holds 998 entities and
+9,255 triples across seven relation types. Its entities comprise 340 catalogue
+products, 312 attribute entities on the catalogue side (17 olfactory families, 110
+accords, and 185 visual notes), and a cross-reference layer of 346 entities (241
+externally recognised perfumes with their 60 accords and 45 families) that supports
+inspired-by and semantic-similarity links. Selecting three items from a catalogue of
+340 is thus a non-trivial retrieval problem rather than a choice among a handful of
+alternatives. The design follows the family of knowledge-graph-based recommenders that
+aggregate collaborative and semantic signals through graph attention
+\cite{litois2023}, \cite{elahi2024}, including work that extends such graphs to
+conversational settings in order to capture implicit user states from dialogue context
+\cite{yang2025}.
 
 Second, \textit{the LLM acts as an interface rather than as the recommender}. This
 mirrors the agent pattern in which an LLM serves as the reasoning layer and
