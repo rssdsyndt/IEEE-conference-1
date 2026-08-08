@@ -96,120 +96,116 @@ intention, hedonic domain, user experience
 \section{Introduction}
 % ===============================================================
 
-Conversational recommender systems (CRS) depart from the one-shot interaction
-paradigm of classical recommenders by supporting a task-oriented, multi-turn
-dialogue in which preferences are elicited incrementally and suggestions can be
-justified, questioned, and revised \cite{jannach2021}. The recent maturation of
-large language models (LLMs) has made such systems inexpensive to build and
-natural to use, and has correspondingly increased the practical importance of a
-question that predates them: what should the system say when it explains itself?
+Conversational recommender systems (CRS) support a task-oriented, multi-turn dialogue
+in which the system elicits a user's current preferences, provides explanations for its
+suggestions, and processes feedback \cite{jannach2021}. Large language models (LLMs)
+have made such systems inexpensive to build and natural to converse with, which sharpens
+a design question that predates them: when a recommender explains itself, what should it
+actually say?
 
-Explainable AI (XAI) has been proposed as the bridge between opaque recommendation
-models and users who must decide how far to rely on them \cite{rong2024}. The
-canonical framing holds that explanations may serve seven distinct aims, including
-transparency, effectiveness, persuasiveness, and trust, and, crucially, that these
-aims can be mutually incompatible, so that an explanation optimised for one may
-degrade another \cite{tintarev2012}. Empirical work in marketing supports the
-first half of this framing: across four studies, the presence of post hoc
-explanations raised interpretability perceptions and, through them, trust,
-purchase intention, and click-through on AI recommendations \cite{chen2024}.
+Explainable AI (XAI) is widely positioned as the bridge between opaque recommendation
+models and users who must decide how far to rely on them; a systematic review of 97 user
+studies of model explanations organises the field around trust, understanding, usability,
+and human-AI collaboration performance \cite{rong2024}. Within recommender systems
+specifically, the canonical framing holds that explanations may serve seven aims ---
+effectiveness, satisfaction, transparency, scrutability, trust, persuasiveness, and
+efficiency --- and, critically, that these aims can be incompatible, so that an
+explanation optimised for one may degrade another \cite{tintarev2012}. Consumer research
+supports the optimistic half of this framing: across four studies, the presence of post
+hoc explanations raised interpretability perceptions and, through them, trust, purchase
+intention, and click-through on AI recommendations \cite{chen2024}.
 
-The second half of the framing, however, is frequently overlooked in practice.
-Explanation presence alone does not guarantee calibrated trust. In an experiment
-with 215 participants, feature-importance explanations produced higher trust than
-counterfactual ones, and explanations raised trust even when the underlying system
-was unreliable, which the authors interpret as overreliance rather than warranted
-trust \cite{brito2023}. Related work shows that explanation interfaces can induce
-trust calibration errors, in which users agree or disagree with the system without
-deliberation \cite{naiseh2021}. Taken together, these results shift the research
-question from whether an explanation is present to which kind of explanation is
-given.
+The pessimistic half receives less attention in practice. In an experiment with 215
+participants, feature-importance explanations produced higher trust than counterfactual
+explanations, and explanations raised trust even when the underlying system performed
+poorly, a pattern the authors read as overreliance rather than warranted trust
+\cite{brito2023}. Qualitative work on explanation interfaces reaches a compatible
+conclusion, documenting trust calibration errors in which users agree or disagree with a
+recommendation without deliberation \cite{naiseh2021}. Together, these results move the
+question from whether an explanation is present to which kind of explanation is given.
 
-Two gaps follow from this shift, and this paper addresses both.
+Two gaps follow, and this paper addresses both.
 
-\textit{First, explanation types are rarely compared head-to-head inside a single
-conversational system.} The seminal demonstration that different explanation types
-build different trusting beliefs, with \textit{how} explanations raising competence
-and benevolence, \textit{why} explanations raising benevolence, and
-\textit{trade-off} explanations raising integrity, was conducted on a static
-recommendation agent for digital cameras nearly two decades ago \cite{wang2007}.
-More recent comparative work contrasts feature-importance with counterfactual
-explanations \cite{brito2023}, or catalogues contrastive and counterfactual
-generation methods \cite{stepin2021}, but does so outside a conversational
-e-commerce setting. A comparison of feature-based, narrative-based, and
-comparative-based justifications within one LLM-driven CRS has not, to our
-knowledge, been reported.
+\textit{First, explanation types are seldom compared against one another inside a single
+conversational system.} The foundational demonstration that explanation type determines
+which component of trust is affected --- \textit{how} explanations raising competence and
+benevolence beliefs, \textit{why} explanations raising benevolence, and
+\textit{trade-off} explanations raising integrity --- was obtained on a static
+recommendation agent \cite{wang2007}. More recent comparative work contrasts
+feature-importance with counterfactual explanations \cite{brito2023}, or organises
+contrastive and counterfactual generation methods into a taxonomy \cite{stepin2021}, but
+does so outside conversational e-commerce. A head-to-head comparison of feature-based,
+narrative-based, and comparative-based justification within one LLM-driven CRS has not,
+to the authors' knowledge, been reported.
 
-\textit{Second, sensory-hedonic domains remain underexplored relative to
-utilitarian ones.} This matters because the effect of explanation is not domain
-invariant. Chen et al. found the facilitating effect of post hoc explanations to be
-stronger in utilitarian than in hedonic decision domains, and further found that
-explanation type interacts with domain: attribute-based explanations were more
-effective in utilitarian settings, whereas user-based explanations were more
-effective in hedonic ones \cite{chen2024}. Converging evidence from clickstream
-data shows that negative reviews depress purchase probability for utilitarian
-products but not for hedonic ones, and not when the review concerns taste-related
-factors \cite{varga2024}. Product type likewise moderates the path from perceived
-deception to online repurchase intention \cite{wangx2022}. Findings imported from
-rational domains therefore cannot be assumed to transfer.
+\textit{Second, sensory-hedonic domains remain underexplored relative to utilitarian
+ones}, and the difference is consequential rather than cosmetic. The facilitating effect
+of post hoc explanations is stronger in the utilitarian than in the hedonic
+decision-making domain, and explanation type interacts with domain: attribute-based
+explanations are more effective at enhancing trust in utilitarian settings, whereas
+user-based explanations are more effective in hedonic ones \cite{chen2024}. Clickstream
+evidence converges from a different angle, showing that negative reviews reduce purchase
+probability and increase search for substitutes for utilitarian products but not for
+hedonic ones, and for reviews concerning product functionality or customer service but
+not for taste-related factors \cite{varga2024}. Product type similarly moderates the path
+from perceived deception to online repurchase intention, with hedonic purchases proving
+less sensitive \cite{wangx2022}. Findings obtained in rational domains therefore cannot
+be assumed to transfer.
 
-Perfume is an extreme instance of the hedonic case. Its defining attribute, scent,
-cannot be transmitted digitally at all, unlike the visual attributes of clothing or
-the auditory attributes of music. Its descriptive vocabulary, comprising terms such
-as accord, sillage, and olfactory family, is mastered mainly by enthusiasts, which
-makes domain familiarity a plausible moderator. Purchase decisions are strongly
-identity-linked, and online purchase uncertainty is correspondingly high. If
-explanation design has domain-dependent effects, perfume is where those effects
-should be most visible.
+Perfume is an extreme case of the hedonic condition. Its defining attribute cannot be
+transmitted through a screen at all, unlike the visual attributes of clothing or the
+auditory attributes of music. Its descriptive vocabulary, comprising terms such as
+accord, sillage, and olfactory family, is commanded mainly by enthusiasts, which makes
+domain familiarity a plausible moderator of how a feature-based justification is
+received. The resulting purchase uncertainty is correspondingly high. If explanation
+design has domain-dependent effects, perfume is where they should be most visible.
 
-Accordingly, this study asks three research questions.
-\textbf{RQ1:} Does explanation type affect perceived trust and purchase intention?
-\textbf{RQ2:} Is perceived trust associated with purchase intention?
-\textbf{RQ3:} Does perfume familiarity moderate the effect of explanation type?
+Accordingly, this study asks three questions. \textbf{RQ1}: does the type of
+justification a conversational recommender offers affect perceived trust and purchase
+intention? \textbf{RQ2}: is perceived trust associated with purchase intention?
+\textbf{RQ3}: does perfume familiarity moderate the effect of justification type?
 
-The contributions of this paper are as follows.
+The contributions are as follows.
 
 \begin{itemize}
-\item \textbf{An artefact.} A perfume CRS in which an LLM handles language and a
-knowledge-graph embedding backend produces recommendations, and in which the
-explanation mode is switched by system-prompt conditioning alone. Because the
-recommendation engine is untouched by the manipulation, the recommended items are
-held constant across conditions, which isolates \textit{how the system explains}
-from \textit{what the system recommends}.
+\item \textbf{An artefact.} A perfume CRS in which an LLM conducts the dialogue and a
+knowledge graph embedding backend selects the items, and in which three justification
+logics are instantiated by system-prompt conditioning alone, without fine-tuning.
+Because item selection is delegated to a backend whose scoring procedure is identical in
+every condition, the manipulation operates on how the system reasons aloud rather than
+on the recommendation procedure itself.
 
-\item \textbf{Comparative empirical evidence in a hedonic domain.} A
-between-subjects experiment with 90 participants establishes that explanation type
-significantly affects both trust and purchase intention in a domain whose core
-attribute is not digitally transmissible, responding directly to the call for
-domain-sensitive XAI evidence raised in \cite{chen2024}.
+\item \textbf{Comparative evidence from a hedonic domain.} A between-subjects field
+experiment with 90 participants, conducted in a physical perfume store where the
+recommended fragrances could actually be smelled, establishes that justification type
+significantly affects both perceived trust and purchase intention. This responds directly
+to the call for domain-sensitive evidence raised in \cite{chen2024}.
 
-\item \textbf{A counter-intuitive finding with theoretical grounding.}
-Narrative-based explanations, designed to be the warmest and most relatable,
-produced the \textit{lowest} trust of the three conditions. This inverts the
-prevailing design heuristic that humanising an agent increases confidence in it,
-and is consistent with evidence that competent conversational styles outperform
-warm ones on cognition-oriented tasks \cite{libaoku2024}.
+\item \textbf{A counter-intuitive result with theoretical grounding.} Narrative-based
+justification, designed to be the warmest and most relatable of the three, produced the
+\textit{lowest} trust. The result inverts a prevailing design heuristic and is consistent
+with evidence that a competent conversational style outperforms a warm one on
+cognition-oriented tasks, mediated by agent-mind perception, while the reverse holds for
+emotion-oriented tasks \cite{libaoku2024}.
 
-\item \textbf{An explicit design trade-off.} The condition maximising trust and the
-condition maximising purchase intention were not the same, and the trust-purchase
-intention association was weak. This provides empirical support for the claim that
-explanatory aims can conflict \cite{tintarev2012}, and suggests that comparative
-explanations act on purchase intention through a route that does not pass through
-trust.
+\item \textbf{An explicit design trade-off.} The condition that maximised trust and the
+condition that maximised purchase intention were not the same, and the association
+between the two outcomes proved weak. This supplies empirical support for the claim that
+explanatory aims can conflict \cite{tintarev2012}, and indicates that comparative
+justification reaches purchase intention by a route that does not pass through trust.
 
-\item \textbf{Transparently reported null and weak results.} No evidence of
-moderation by familiarity was found, and the limitations of statistical power that
-qualify this result are reported rather than suppressed.
+\item \textbf{Transparent treatment of null and weak results.} No evidence of moderation
+by familiarity was found, and the constraints that qualify this conclusion, together with
+those affecting a supplementary behavioural measure, are reported rather than suppressed.
 \end{itemize}
 
-The remainder of this paper is organised as follows. Section~\ref{sec:related}
-reviews explanation types in XAI and recommender systems, explanations in CRS,
-trust and purchase intention, and hedonic product domains, and positions the
-present work. Section~\ref{sec:system} describes the system architecture and the
-three explanation conditions. Section~\ref{sec:method} presents the experimental
-design, measures, manipulation check, and analysis plan. Section~\ref{sec:results}
-reports the results. Section~\ref{sec:discussion} interprets them and states the
-limitations. Section~\ref{sec:conclusion} concludes.
+The remainder of the paper is organised as follows. Section~\ref{sec:related} reviews
+explanation types in XAI and recommender systems, explanations in CRS, trust and purchase
+intention, hedonic product domains, and familiarity as a boundary condition.
+Section~\ref{sec:system} describes the system and the three conditions.
+Section~\ref{sec:method} presents the method. Section~\ref{sec:results} reports the
+results, Section~\ref{sec:discussion} interprets them and states the limitations, and
+Section~\ref{sec:conclusion} concludes.
 
 % ===============================================================
 \section{Related Work}
