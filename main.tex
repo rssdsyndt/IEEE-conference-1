@@ -38,10 +38,12 @@
 %   \usepackage[hidelinks]{hyperref}
 % which keeps the links active but prints them in plain black.
 % ---------------------------------------------------------------
+% Define consistent link color without commas in \usepackage options
+\definecolor{linkblue}{rgb}{0,0,0.6}
 \usepackage[colorlinks=true,
-            linkcolor=[rgb]{0,0,0.6},
-            citecolor=[rgb]{0,0,0.6},
-            urlcolor=[rgb]{0,0,0.6},
+            linkcolor=linkblue,
+            citecolor=linkblue,
+            urlcolor=linkblue,
             breaklinks=true]{hyperref}
 
 \begin{document}
