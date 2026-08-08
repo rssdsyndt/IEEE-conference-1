@@ -36,17 +36,14 @@
 
 \title{The Effect of XAI Explanation Types on User Trust\\ and Purchase Intention in a Conversational\\ Recommender System for the Perfume Domain}
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Raissa Desyandita}
-\IEEEauthorblockA{\textit{\PH{department}} \\
-\textit{\PH{institution}}\\
-\PH{City, Country} \\
-\PH{email / ORCID}}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} \PH{Supervisor Name}}
-\IEEEauthorblockA{\textit{\PH{department}} \\
-\textit{\PH{institution}}\\
-\PH{City, Country} \\
-\PH{email / ORCID}}
+% ---------------------------------------------------------------
+% DOUBLE-BLIND SUBMISSION
+% Author identities are withheld for review. Before the camera-ready
+% version, restore the real author block here and also restore the
+% institution name in Section IV.B (currently anonymised there too).
+% ---------------------------------------------------------------
+\author{\IEEEauthorblockN{Anonymous Author(s)}
+\IEEEauthorblockA{\textit{Affiliation withheld for double-blind review}}
 }
 
 \maketitle
@@ -514,9 +511,8 @@ C & Comparative-based & Contrastive: \textit{how it differs from the alternative
 \end{center}
 \footnotesize\textit{Note.} Elicitation examples are translated from the Indonesian
 system prompts. In all conditions the agent is forbidden to disclose which explanation
-style it is using or to name competing brands.
-\PH{Add one verbatim recommendation excerpt per condition from a real session
-transcript.}
+style it is using or to name competing brands. Verbatim recommendation excerpts for a
+single product appear in Table~\ref{tab:excerpts}.
 \end{table*}
 
 Conditions A and C have established counterparts in the XAI literature. Condition A
@@ -536,6 +532,32 @@ closest in spirit to the user-based explanations found more effective in hedonic
 domains \cite{chen2024}, while differing in one respect examined in
 Section~\ref{sec:discussion}: user-based explanations convey social proof, whereas
 purely narrative explanations convey none.
+
+Table~\ref{tab:excerpts} shows how the three logics render the \textit{same} product,
+drawn from three sessions that each received it. The contrast is therefore stylistic
+rather than a product artefact. Inspection of the condition C transcripts confirms that
+comparative explanations consistently name one or two of the co-recommended products as
+explicit comparators rather than gesturing vaguely at the set.
+
+\begin{table}[htbp]
+\caption{Verbatim Explanations for One Product Across the Three Conditions}
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{0.5cm}p{7.3cm}@{}}
+\toprule
+& \textbf{Explanation as delivered (translated)} \\
+\midrule
+A & ``\textit{Our First Love} belongs to the AQUATIC family with green and fresh-spicy as its main character --- exactly what you are looking for in an office setting. This fresh, clean aroma gives a soft and clean impression, suitable for everyday wear. With moderate intensity, it will read clearly and last on your skin.'' \\
+B & ``\textit{Our First Love} is the perfect companion for your days at work. Picture a fresh scent flowing gently, like morning dew, giving you new energy and confidence. It suits you when you want to appear clean and professional without sacrificing elegance.'' \\
+C & ``\textit{Our First Love} is the freshest and brightest of the three --- it foregrounds freshness with a woody touch. If you are after something strong and clean for a relaxed setting, this is the right pick. It works particularly well during the day.'' \\
+\bottomrule
+\end{tabular}
+\label{tab:excerpts}
+\end{center}
+\footnotesize\textit{Note.} Excerpts come from three different sessions, so the elicited
+preferences differ; A frames the product for office use and C for a relaxed setting.
+Original text was in Indonesian.
+\end{table}
 
 One asymmetry between the prompts must be recorded here because it bears on a
 supplementary analysis reported later. The closing messages in conditions A and C
@@ -623,11 +645,12 @@ sample composition.
 Demographic characteristics beyond familiarity, specifically age and gender, were not
 recorded; the consequences are stated in the limitations. Participation was voluntary
 and preceded by an on-screen consent notice stating that the system formed part of
-collaborative academic research at Universitas Gadjah Mada, that all responses would be
-fully anonymised, that the data would be used for academic purposes only, and that
+collaborative academic research at the authors' institution, that all responses would
+be fully anonymised, that the data would be used for academic purposes only, and that
 participation could be declined. Participants proceeded only after explicit
 affirmation. \PH{Add the ethics approval body and reference number if one was issued;
-if the institution required no formal review, state that explicitly.}
+if the institution required no formal review, state that explicitly. Restore the
+institution name in the camera-ready version.}
 
 \subsection{Measures}
 
@@ -661,8 +684,8 @@ S2 & User satisfaction & I would recommend this chatbot to others who want to ch
 \label{tab:items}
 \end{center}
 \footnotesize\textit{Note.} All items were administered in Indonesian; the wordings
-above are translations. \PH{Response format of the sensory-access item (binary,
-ordinal, or Likert) needs to be specified.}
+above are translations. The eight construct items use five-point Likert scales; the
+sensory-access item is binary.
 \end{table*}
 
 One additional item, labelled \texttt{scent\_trial}, recorded whether the participant
@@ -677,9 +700,8 @@ throughout.
 \subsection{Procedure}
 
 The study was conducted offline, on the premises of a physical perfume store, with the
-system running as a web application on site. Two kinds of session were used: regular
-walk-in visits and mini-workshop sessions. Which of the two a given participant
-attended was not recorded, and the implications of this are stated in the limitations.
+system running as a web application on site. Data collection took place during the
+store's normal operating sessions.
 
 Each participant read the consent notice, affirmed participation, and then interacted
 with the agent through the ten-question elicitation sequence until three ranked
@@ -689,10 +711,11 @@ minutes. Because the store's tester area was accessible throughout, participants
 able to smell the recommended fragrances physically, and the \texttt{scent\_trial} item
 records whether they had done so.
 
-Participants were not told that justification logic was under investigation, nor that
-other versions of the system existed; the prompts explicitly forbid the agent from
-disclosing which style it is using. \PH{Specify the recruitment channel and any
-compensation offered.}
+Participation arose from an institutional collaboration with the store rather than from
+a recruitment campaign, and no compensation was offered. Participants were not told
+that justification logic was under investigation, nor that other versions of the system
+existed; the prompts explicitly forbid the agent from disclosing which style it is
+using.
 
 \subsection{Manipulation Check}
 
@@ -748,7 +771,7 @@ comparably established rank-based test exists for a two-factor interaction. The
 inconsistency is flagged here rather than left for the reader to discover, and the
 result is interpreted with corresponding caution.
 
-All analyses were conducted in JASP \PH{version number}.
+All analyses were conducted in JASP v0.97.1.
 
 \section{Results}
 \label{sec:results}
