@@ -395,90 +395,85 @@ affective explanation \textit{content}, which is distinct from the conversationa
 % ===============================================================
 \section{System Design}
 \label{sec:system}
+% ===============================================================
 
 \subsection{Architecture Overview}
 
 The experimental platform is Aromatique AI, a conversational recommender agent for
-perfume deployed as a web application and operated on site in a physical perfume
-store. Its architecture separates two responsibilities that are frequently fused in
-LLM-based recommenders: \textit{language} and \textit{recommendation}. A large
-language model, GPT-4o-mini, conducts the dialogue, extracts preferences, and
-verbalises the justification. A separate backend, a conversational-recommendation
-hybrid knowledge graph embedding (CR-HKGE) module, selects the recommended items.
-Fig.~\ref{fig:arch} shows the arrangement.
+perfume, deployed as a web application and operated on site in a physical perfume store.
+Its architecture separates two responsibilities that LLM-based recommenders frequently
+fuse: \textit{language} and \textit{recommendation}. GPT-4o-mini conducts the dialogue,
+extracts preferences, and verbalises the justification; a conversational-recommendation
+hybrid knowledge graph embedding (CR-HKGE) backend selects the items. Fig.~\ref{fig:arch}
+shows the arrangement.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=\columnwidth]{fig_architecture}}
 \caption{System architecture. The LLM conducts the dialogue and phrases the
-justification; item selection is delegated to the CR-HKGE backend and follows the same
-procedure in every condition. The condition is set once, at the system-prompt layer, at
-the start of each session, and governs both how preferences are elicited and how the
-recommendation is justified. The preference record comprises familiarity, occasion,
-primary and secondary scent character, intensity, attributes to avoid, and free-text
-context.}
+justification; item selection is delegated to the CR-HKGE backend, whose scoring
+procedure is identical in every condition. The condition is set once, at the
+system-prompt layer, at the start of each session, and governs both how preferences are
+elicited and how the recommendation is justified.}
 \label{fig:arch}
 \end{figure}
 
-Two properties of this arrangement matter for the interpretation of the experiment.
+Two properties of this arrangement bear on the interpretation of the experiment.
 
-First, \textit{the backend is a knowledge graph embedding model, not a
+First, \textit{the backend is a knowledge graph embedding model rather than a
 retrieval-augmented generation pipeline}. Recommendations are produced by scoring
 candidate items in a learned embedding space over a structured perfume knowledge graph,
-rather than by retrieving and summarising documents. The graph holds 998 entities and
-9,255 triples across seven relation types. Its entities comprise 340 catalogue
-products, 312 attribute entities on the catalogue side (17 olfactory families, 110
-accords, and 185 visual notes), and a cross-reference layer of 346 entities (241
-externally recognised perfumes with their 60 accords and 45 families) that supports
-inspired-by and semantic-similarity links. Selecting three items from a catalogue of
-340 is thus a non-trivial retrieval problem rather than a choice among a handful of
-alternatives. The design follows the family of knowledge-graph-based recommenders that
-aggregate collaborative and semantic signals through graph attention
-\cite{litois2023}, \cite{elahi2024}, including work that extends such graphs to
-conversational settings in order to capture implicit user states from dialogue context
-\cite{yang2025}.
+not by retrieving and summarising documents. The graph holds 998 entities and 9,255
+triples across seven relation types: 340 catalogue products, 312 attribute entities on the
+catalogue side (17 olfactory families, 110 accords, 185 visual notes), and a
+cross-reference layer of 346 entities comprising 241 externally recognised perfumes with
+their 60 accords and 45 families, which supports inspired-by and semantic-similarity
+links. Selecting three items from 340 is therefore a non-trivial retrieval problem rather
+than a choice among a handful of alternatives. The design follows the family of
+knowledge-graph recommenders that aggregate collaborative and semantic signals through
+graph attention \cite{litois2023}, \cite{elahi2024}, including work extending such graphs
+to conversational settings in order to capture a user's implicit states, such as current
+situation and emotional state, from the dialogue context \cite{yang2025}.
 
-Second, \textit{the LLM acts as an interface rather than as the recommender}. This
-mirrors the agent pattern in which an LLM serves as the reasoning layer and
-domain-specific recommendation models serve as tools \cite{huang2023}, an arrangement
-motivated by the observation that LLMs lack domain-specific item catalogues and are
-prone to proposing items absent from the target catalogue. Item selection is therefore
-governed by a single scoring procedure that is identical in all three conditions; the
-LLM cannot substitute, reorder, or invent products.
+Second, \textit{the LLM acts as an interface rather than as the recommender}. This mirrors
+the agent pattern that employs LLMs as the brain and recommender models as tools
+\cite{huang2023}, an arrangement motivated by the observation that LLMs lack knowledge of
+domain-specific item catalogues, which in e-commerce leads them to propose products that
+do not exist. Item selection here is governed by a single scoring procedure identical in
+all three conditions; the LLM cannot substitute, reorder, or invent products.
 
-It is important to be precise about what this does and does not guarantee. The
-recommendation \textit{algorithm} is invariant across conditions. The recommended
-\textit{items} are not guaranteed to be, because the backend is queried with a
-preference representation that the dialogue itself produces, and the dialogue differs
-between conditions in the manner described below. This qualification is treated
-explicitly in Section~\ref{sec:discussion} rather than assumed away.
+It is worth being precise about what this does and does not guarantee. The recommendation
+\textit{algorithm} is invariant across conditions. The recommended \textit{items} are not
+guaranteed to be, because the backend is queried with a preference representation that the
+dialogue itself produces, and the dialogue differs between conditions in the manner
+described next. Section~\ref{sec:discussion} treats this qualification explicitly rather
+than assuming it away.
 \PH{Verify from the session logs whether the distribution of recommended products is
-comparable across the three conditions, and report the overlap; this materially
-strengthens or weakens the claim above.}
+comparable across conditions, and report the overlap; this materially strengthens or
+weakens the claim above.}
 
 \subsection{Experimental Conditions}
 
-The condition is set by system-prompt conditioning at the start of each session, with
-no fine-tuning of the underlying model. This follows the prompting paradigm, one of the
-three paradigms, alongside pre-training and fine-tuning, by which LLMs are adapted to
-recommendation tasks \cite{zhao2024}. The practical advantage is that the independent
-variable becomes inexpensive to manipulate and straightforward for other researchers to
-replicate; the three prompts are reproduced in full in the appendix.
+The condition is fixed by system-prompt conditioning at the start of each session, with no
+fine-tuning. This follows the prompting paradigm, one of the three paradigms alongside
+pre-training and fine-tuning by which LLMs are adapted to recommendation tasks
+\cite{zhao2024}, and it makes the independent variable inexpensive to manipulate and
+straightforward to replicate.
+\PH{Confirm that the venue accepts supplementary material; if so, state here that the
+three system prompts are provided as such.}
 
 The manipulated variable is the \textit{justification logic} the agent applies, and it
-is applied consistently across the whole interaction rather than only at the moment of
-recommendation. Each prompt instructs the agent to maintain its assigned logic ``from
-your first greeting to your final closing message.'' In practice this means the ten
-elicitation questions are framed differently in each condition, as are the wording of
-acknowledgements and the final explanation. Table~\ref{tab:conditions} illustrates this
-with the parallel form of a single elicitation question and the corresponding
-explanation style.
+governs the whole interaction rather than only the moment of recommendation. Each prompt
+instructs the agent to hold its assigned logic ``from your first greeting to your final
+closing message,'' so the ten elicitation questions are framed differently in each
+condition, as are the acknowledgements and the final explanation. Table~\ref{tab:conditions}
+gives the parallel form of one elicitation question alongside the corresponding
+explanation content.
 
-This is a deliberate design choice rather than an oversight. A system whose
-conversational framing contradicted its own explanations would be internally
-incoherent, and would be unlikely to occur in deployment. The cost of the choice is
-that the study manipulates justification logic as a whole and therefore cannot separate
-the contribution of explanation content from that of conversational framing. This
-limitation is stated in Section~\ref{sec:discussion}.
+This is a deliberate design decision rather than an oversight. A system whose
+conversational framing contradicted its own explanations would be internally incoherent
+and unlikely to occur in deployment. Its cost is that the study manipulates justification
+logic as a whole and cannot separate the contribution of explanation content from that of
+conversational framing, a limitation stated in Section~\ref{sec:discussion}.
 
 \begin{table*}[htbp]
 \caption{The Three Experimental Conditions}
@@ -488,101 +483,79 @@ limitation is stated in Section~\ref{sec:discussion}.
 \toprule
 & \textbf{Condition} & \textbf{Justification logic} & \textbf{Elicitation framing (parallel item)} & \textbf{Explanation content} \\
 \midrule
-A & Feature-based & Attributive: \textit{what it is made of} & ``Do you prefer something dominantly fresh such as citrus or aquatic, something warm such as amber or woody, or something floral?'' & Names the olfactory family and main accords explicitly and connects each attribute to a stated preference. Explanations are independent; no product may be cross-referenced. \\
-B & Narrative-based & Affective: \textit{how it will feel to you} & ``When you wear this later, how do you want to feel --- more confident, calmer, or freer and more energised?'' & Connects the scent to a moment, mood, memory, or identity. Technical vocabulary is forbidden. Explanations are independent; no product may be cross-referenced. \\
-C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & ``Of these two broad characters --- fresh and light like morning air, versus warm and deep like wood or spice --- which are you closer to?'' & Positions each product against at least one other on character, intensity, or fit. Technical terms are permitted but must be immediately translated into comparative language. \\
+A & Feature-based & Attributive: \textit{what it is made of} & ``Do you prefer something dominantly fresh such as citrus or aquatic, something warm such as amber or woody, or something floral?'' & Names the olfactory family and main accords explicitly and ties each attribute to a stated preference. Explanations are independent; cross-referencing other products is forbidden. \\
+B & Narrative-based & Affective: \textit{how it will feel to you} & ``When you wear this later, how do you want to feel --- more confident, calmer, or freer and more energised?'' & Connects the scent to a moment, mood, memory, or identity. Technical vocabulary is forbidden. Explanations are independent; cross-referencing is forbidden. \\
+C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & ``Of these two broad characters --- fresh and light like morning air, versus warm and deep like wood or spice --- which are you closer to?'' & Positions each product against at least one other on character, intensity, or fit. Technical terms are permitted but must be translated immediately into comparative language. \\
 \bottomrule
 \end{tabular}
 \label{tab:conditions}
 \end{center}
-\footnotesize\textit{Note.} Elicitation examples are translated from the Indonesian
-system prompts. In all conditions the agent is forbidden to disclose which explanation
-style it is using or to name competing brands. Verbatim recommendation excerpts for a
-single product appear in Table~\ref{tab:excerpts}.
+\footnotesize\textit{Note.} Elicitation examples are translated from the Indonesian system
+prompts. In every condition the agent is forbidden to disclose which style it is using or
+to name competing brands.
 \end{table*}
 
+The contrast is visible in how the three logics render the same product. For one perfume
+recommended in all three conditions, condition A produced ``\textit{it belongs to the
+AQUATIC family with green and fresh-spicy as its main character --- exactly what you are
+looking for in an office setting}''; condition B produced ``\textit{picture a fresh scent
+flowing gently, like morning dew, giving you new energy and confidence}''; and condition C
+produced ``\textit{it is the freshest and brightest of the three --- it foregrounds
+freshness with a woody touch}''. The excerpts come from three different sessions, so the
+elicited preferences differ, which is why A frames the product for office use and C for a
+relaxed setting. Inspection of the condition C transcripts confirms that comparative
+explanations consistently name one or two co-recommended products as explicit comparators.
+
 Conditions A and C have established counterparts in the XAI literature. Condition A
-corresponds to attribute-based or feature-importance explanation, the most extensively
-studied form and the one shown to yield higher trust than counterfactual explanation
-among non-expert users \cite{brito2023}. Condition C corresponds to contrastive
-explanation, for which a two-level taxonomy of generation methods has been established
-\cite{stepin2021}, and which has been shown to improve the accuracy of users' own
-decisions relative to causal explanation \cite{celar2023}.
+corresponds to attribute-based or feature-importance explanation, the form shown to yield
+higher trust than counterfactual explanation among non-expert users \cite{brito2023}.
+Condition C corresponds to contrastive explanation, for which a taxonomy of generation
+methods exists \cite{stepin2021} and which has been shown to improve the accuracy of
+users' own decisions relative to causal explanation \cite{celar2023}.
 
 Condition B is the novel element. The CRS and anthropomorphism literatures examine
-conversational \textit{style} along the warmth-competence axis \cite{libaoku2024},
-\cite{cheng2022}, but treat explanation \textit{content} as fixed. Condition B instead
-makes affective content the substance of the justification: it supplies no
-compositional facts and no comparative frame, only resonance. It is the condition
-closest in spirit to the user-based explanations found more effective in hedonic
-domains \cite{chen2024}, while differing in one respect examined in
-Section~\ref{sec:discussion}: user-based explanations convey social proof, whereas
-purely narrative explanations convey none.
+conversational \textit{style} on the warmth-competence axis \cite{libaoku2024},
+\cite{cheng2022} while treating explanation \textit{content} as fixed. Condition B instead
+makes affective content the substance of the justification: it supplies no compositional
+facts and no comparative frame, only resonance. It is closest in spirit to the user-based
+explanations found more effective in hedonic domains \cite{chen2024}, while differing in
+one respect examined in Section~\ref{sec:discussion}: user-based explanations carry social
+proof, whereas purely narrative explanations carry none.
 
-Table~\ref{tab:excerpts} shows how the three logics render the \textit{same} product,
-drawn from three sessions that each received it. The contrast is therefore stylistic
-rather than a product artefact. Inspection of the condition C transcripts confirms that
-comparative explanations consistently name one or two of the co-recommended products as
-explicit comparators rather than gesturing vaguely at the set.
-
-\begin{table}[htbp]
-\caption{Verbatim Explanations for One Product Across the Three Conditions}
-\begin{center}
-\renewcommand{\arraystretch}{1.15}
-\begin{tabular}{@{}p{0.5cm}p{7.3cm}@{}}
-\toprule
-& \textbf{Explanation as delivered (translated)} \\
-\midrule
-A & ``\textit{Our First Love} belongs to the AQUATIC family with green and fresh-spicy as its main character --- exactly what you are looking for in an office setting. This fresh, clean aroma gives a soft and clean impression, suitable for everyday wear. With moderate intensity, it will read clearly and last on your skin.'' \\
-B & ``\textit{Our First Love} is the perfect companion for your days at work. Picture a fresh scent flowing gently, like morning dew, giving you new energy and confidence. It suits you when you want to appear clean and professional without sacrificing elegance.'' \\
-C & ``\textit{Our First Love} is the freshest and brightest of the three --- it foregrounds freshness with a woody touch. If you are after something strong and clean for a relaxed setting, this is the right pick. It works particularly well during the day.'' \\
-\bottomrule
-\end{tabular}
-\label{tab:excerpts}
-\end{center}
-\footnotesize\textit{Note.} Excerpts come from three different sessions, so the elicited
-preferences differ; A frames the product for office use and C for a relaxed setting.
-Original text was in Indonesian.
-\end{table}
-
-One asymmetry between the prompts must be recorded here because it bears on a
-supplementary analysis reported later. The closing messages in conditions A and C
-instruct the agent to end with an invitation to smell the fragrances at the store's
-tester area; the closing message in condition B contains no such instruction. The
-consequences of this asymmetry are examined in Section~\ref{sec:discussion}.
+One asymmetry between the prompts is recorded here because it bears on a supplementary
+analysis reported later. The closing messages in conditions A and C instruct the agent to
+end by inviting the user to smell the fragrances at the store's tester area; the closing
+message in condition B contains no such instruction.
 
 \subsection{Conversational Interface}
 
 A session proceeds in four stages: greeting and consent; preference elicitation;
-presentation of three ranked perfumes together with the condition-appropriate
-explanation; and the post-session questionnaire.
+presentation of three ranked perfumes with the condition-appropriate explanation; and the
+post-session questionnaire.
 
-Elicitation follows a fixed protocol of exactly ten questions, asked one per message,
-with the agent instructed never to bundle questions and to keep each reply to two or
-three sentences. In the terms introduced by Ziegfeld et al. \cite{ziegfeld2025}, this
-places the interface at the \textit{high-guidance, low-restriction} point of the
-elicitation space: the sequence of topics is fixed by the system, while responses are
-given in free-form natural language. The single exception is the first question, which
-records perfume familiarity through three selectable tags corresponding to beginner,
-enthusiast, and collector.
+Elicitation follows a fixed protocol of exactly ten questions, asked one per message, with
+the agent instructed never to bundle questions and to keep each reply to two or three
+sentences. In the terms introduced by Ziegfeld et al. \cite{ziegfeld2025}, this places the
+interface at the \textit{high-guidance, low-restriction} point of the elicitation space:
+the system fixes the sequence of topics while responses are given in free-form natural
+language. The sole exception is the first question, which records perfume familiarity
+through three selectable tags corresponding to beginner, enthusiast, and collector.
 
 The dialogue yields a structured preference record comprising familiarity, occasion,
 primary and secondary scent character, intensity, attributes to avoid, and free-text
-additional context. Whereas the fields are identical across conditions, their content
-is expressed in condition-specific vocabulary: scent character is captured as
-attributes in condition A, as moods in condition B, and as positions on contrasting
-spectra in condition C. This record is passed to the CR-HKGE backend, which returns
-three ranked products with their olfactory family and main accords; the LLM then
-phrases the justification according to its assigned logic.
+context. The fields are identical across conditions, but their content is expressed in
+condition-specific vocabulary: scent character is captured as attributes in condition A, as
+moods in condition B, and as positions on contrasting spectra in condition C. The record is
+passed to the CR-HKGE backend, which returns three ranked products with their olfactory
+family and main accords; the LLM then phrases the justification in its assigned logic.
 
 Sessions comprised a mean of 20.29 messages exchanged between participant and agent
-($SD = 4.67$, range 9 to 55). Dialogue length was comparable across conditions, with
-means of 20.60 in condition A, 19.20 in condition B, and 21.07 in condition C, a spread
-of under two messages. Interaction length is therefore an unlikely alternative
-explanation for the differences reported in Section~\ref{sec:results}. Variability was
-markedly greater in condition A ($SD = 7.03$) than in conditions B ($SD = 2.89$) and C
-($SD = 2.65$), indicating a small number of unusually long feature-based sessions
-rather than a systematic difference in dialogue length.
+($SD = 4.67$, range 9 to 55). Length was comparable across conditions --- 20.60 in A, 19.20
+in B, and 21.07 in C, a spread of under two messages --- which makes interaction length an
+unlikely alternative explanation for the differences reported in
+Section~\ref{sec:results}. Variability was greater in condition A ($SD = 7.03$) than in B
+($SD = 2.89$) or C ($SD = 2.65$), indicating a small number of unusually long feature-based
+sessions rather than a systematic difference in dialogue length.
 
 % ===============================================================
 \section{Method}
