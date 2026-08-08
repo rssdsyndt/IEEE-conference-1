@@ -432,10 +432,14 @@ hybrid knowledge graph embedding (CR-HKGE) module, selects the recommended items
 Fig.~\ref{fig:arch} shows the arrangement.
 
 \begin{figure}[htbp]
-\centerline{\PH{Fig. 1 --- architecture diagram to be inserted (fig1.png placeholder)}}
+\centerline{\includegraphics[width=\columnwidth]{fig_architecture}}
 \caption{System architecture. The LLM conducts the dialogue and phrases the
-justification; item selection is delegated to the CR-HKGE backend. The condition is
-set once, at the system-prompt layer, at the start of each session.}
+justification; item selection is delegated to the CR-HKGE backend and follows the same
+procedure in every condition. The condition is set once, at the system-prompt layer, at
+the start of each session, and governs both how preferences are elicited and how the
+recommendation is justified. The preference record comprises familiarity, occasion,
+primary and secondary scent character, intensity, attributes to avoid, and free-text
+context.}
 \label{fig:arch}
 \end{figure}
 
@@ -589,10 +593,13 @@ spectra in condition C. This record is passed to the CR-HKGE backend, which retu
 three ranked products with their olfactory family and main accords; the LLM then
 phrases the justification according to its assigned logic.
 
-Sessions comprised a mean of 20.29 messages exchanged between user and agent
-(range 9 to 55) \PH{insert SD, and the mean per condition if available; comparable
-dialogue lengths across conditions would rule out interaction length as an alternative
-explanation for the observed differences}.
+Sessions comprised a mean of 20.29 messages exchanged between participant and agent
+($SD = 4.67$, range 9 to 55). Dialogue length was comparable across the three
+conditions \PH{insert the arithmetic mean and SD of message count per condition; the
+figures currently to hand are geometric means (B 18.95, A 19.92, C 20.91), which
+indicate closely similar lengths but are not the statistic to report}, which makes
+interaction length an unlikely alternative explanation for the differences reported in
+Section~\ref{sec:results}.
 
 % ===============================================================
 \section{Method}
