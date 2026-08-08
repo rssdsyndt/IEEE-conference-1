@@ -216,216 +216,182 @@ Section~\ref{sec:conclusion} concludes.
 
 \subsection{Explanation Types in XAI and Recommender Systems}
 
-Tintarev and Masthoff established the reference taxonomy of explanatory aims for
-recommender systems, comprising effectiveness, satisfaction, transparency,
-scrutability, trust, persuasiveness, and efficiency, and argued that any evaluation
-must state which aim it targets because the aims can be incompatible
-\cite{tintarev2012}. Their own empirical studies illustrate the point sharply:
-across two domains, personalising feature-based explanations was
-\textit{detrimental} to effectiveness while it plausibly improved satisfaction, a
-result the authors explicitly report as contrary to their hypothesis. The
-structural lesson, that a more appealing explanation can be a less useful one, is
-directly relevant to the present study.
+Tintarev and Masthoff established the reference framing for explanation in recommender
+systems, in which explanations may serve seven aims and any evaluation must state which
+aim it targets because the aims can be incompatible \cite{tintarev2012}. Their own
+empirical studies illustrate the tension concretely: across two domains, personalising
+feature-based explanations proved detrimental to effectiveness even though it may improve
+user satisfaction, a result the authors report as contrary to their hypothesis. The
+structural lesson --- that a more appealing explanation can be a less useful one --- bears
+directly on the present study.
 
-Wang and Benbasat provided the foundational demonstration that explanation type,
-not merely explanation presence, determines which component of trust is affected
-\cite{wang2007}. Using a purpose-built recommendation agent, they showed that
-\textit{how} explanations increased competence and benevolence beliefs,
+Wang and Benbasat supplied the foundational demonstration that it is explanation
+\textit{type}, not explanation presence, that determines which component of trust is
+affected \cite{wang2007}. In a laboratory experiment with a purpose-built recommendation
+agent, the use of \textit{how} explanations increased competence and benevolence beliefs,
 \textit{why} explanations increased benevolence beliefs, and \textit{trade-off}
 explanations increased integrity beliefs. Their conclusion, that the effects of
-explanations depend largely on the content and type of explanation provided, is the
-premise on which the present study rests.
+explanations depend largely on the contents and types of explanations provided, is the
+premise on which this study rests.
 
-Subsequent work has refined the picture without resolving it. Stepin et al. survey
-contrastive and counterfactual explanation generation and propose a two-level
-taxonomy, noting that contrastive explanations are in high demand yet lack
-standardised evaluation \cite{stepin2021}. De Brito Duarte et al. compared feature
-importance against counterfactual explanations in an AI recommendation task and
-found feature importance to yield higher trust among non-expert participants, while
-also observing that explanations increased trust in an unreliable system
-\cite{brito2023}. They note that counterfactual explanations may nonetheless be
-advantageous where expert knowledge is available, a caveat that becomes relevant to
-the interpretation of our comparative condition. Naiseh et al. approach the same
-tension from a design perspective, deriving five principles intended to support
-trust calibration rather than trust maximisation \cite{naiseh2021}.
+Subsequent work has sharpened the picture without settling it. Stepin et al. conducted a
+systematic review of contrastive and counterfactual explanation and proposed a taxonomy
+covering both theoretical accounts and computational frameworks \cite{stepin2021}. De
+Brito Duarte et al. compared feature-importance against counterfactual explanations with
+215 participants and found trust higher under feature importance, while also observing
+that explanations increased trust even when the system was unreliable; they further note
+that other work suggests counterfactual explanations may be particularly advantageous
+where expert knowledge is available \cite{brito2023}. Naiseh et al. approach the same
+tension from the design side, deriving five principles intended to support calibrated
+rather than maximal trust \cite{naiseh2021}.
 
-At the level of the field, Rong et al. reviewed 97 user studies of model
-explanations and concluded that the effectiveness of XAI in users' interaction with
-models is \textit{not consistent across applications}, and that user evaluations
-remain sparse and rarely informed by cognitive or social science \cite{rong2024}.
-Domain-specific studies confirm the value of measuring perception directly rather
-than assuming it; de Campos et al., for instance, evaluate an explainable
-content-based recommender against transparency, satisfaction, trust, and
-scrutability in a user study \cite{decampos2024}.
+Two broader observations frame these results. Reviewing 97 user studies of model
+explanations, Rong et al. concluded that the effectiveness of XAI in users' interaction
+with models is not consistent across applications, and that such evaluations rarely draw
+on cognitive or social science \cite{rong2024}. Domain-specific studies accordingly
+measure perception directly; de Campos et al., for instance, evaluate an explainable
+content-based recommender against transparency, satisfaction, trust, and scrutability in
+a user study \cite{decampos2024}.
 
-The anchor study for the present work is Chen et al., who conducted four studies on
-consumer responses to explainable AI recommendations \cite{chen2024}. Three findings
-are pertinent. First, the presence of post hoc explanations increased
-interpretability perceptions, which in turn increased trust, purchase intention, and
-click-through. Second, this facilitating effect was stronger in the utilitarian than
-in the hedonic decision-making domain. Third, explanation type moderated
-effectiveness, with attribute-based explanations more effective in utilitarian
-domains and user-based explanations more effective in hedonic domains. Their own
-conclusion is that there are no universally optimal post hoc explanations. The
-present study extends this line from static recommendation displays into multi-turn
-conversation, and, as reported in Section~\ref{sec:results}, obtains a result that
-runs against the direction their third finding would predict.
+The anchor for the present work is Chen et al., who examined consumer responses to
+explainable AI recommendations across four studies \cite{chen2024}. The presence of post
+hoc explanations increased interpretability perceptions and, through them, trust,
+purchase intention, and click-through; the facilitating effect was stronger in the
+utilitarian than in the hedonic decision-making domain; and explanation type modulated
+effectiveness, with attribute-based explanations more effective at enhancing trust in
+utilitarian domains and user-based explanations more effective in hedonic ones. Their own
+conclusion is that there are no universally optimal post hoc explanations. The present
+study carries this line from static recommendation displays into multi-turn conversation
+and, as Section~\ref{sec:results} reports, obtains a result that runs against the
+direction their third finding would predict.
 
 \subsection{Explanations in Conversational Recommender Systems}
 
-Jannach et al. provide the standard survey of CRS and observe that although
-explanations are often considered a main feature of a convincing dialogue, these
-aspects are not explored a great deal \cite{jannach2021}. The intervening years have
-partially, but only partially, closed this gap.
+Jannach et al., surveying the CRS field, observe that although explanations are often
+considered a main feature of a convincing dialogue, these aspects are not explored a great
+deal \cite{jannach2021}. The intervening years have narrowed the gap only partially.
 
-Hernandez-Bocanegra and Ziegler investigated conversational explanation delivery
-directly, contrasting a GUI-based dialogue with a chatbot-like natural language
-interface and varying the degree of interactivity \cite{ziegler2023}. Using
-structural equation modelling, they related perceived explanation quality to
-transparency, trust, and effectiveness, and found that offering interactive options
-for scrutinising explanatory arguments significantly improved user evaluations. Their
-work establishes that the conversational channel itself shapes how explanations are
-received, but it manipulates interface and interactivity rather than explanation
-content.
+Hernandez-Bocanegra and Ziegler investigated conversational explanation delivery directly,
+contrasting a GUI-based dialogue with a chatbot-like natural-language interface while
+varying the degree of interactivity, and relating perceived explanation quality to
+transparency, trust, and effectiveness through structural equation modelling
+\cite{ziegler2023}. Providing interactive options for scrutinising explanatory arguments
+had a significant positive influence on user evaluations. Their manipulation, however,
+concerns interface and interactivity rather than the content of the explanation.
 
-Siro et al. annotated CRS dialogues along six aspects, namely relevance,
-interestingness, understanding, task completion, interest arousal, and efficiency,
-and found that the concept of satisfaction varies across users, with the system's
-ability to make relevant recommendations the dominant turn-level factor
-\cite{siro2023}. Rana et al. studied critiquing-based conversational recommendation
-with 228 participants and showed that the choice of underlying recommendation
-algorithm materially changes critiquing behaviour, dialogue length, and satisfaction
-\cite{rana2024}.
+Siro et al. annotated CRS dialogues along six aspects --- relevance, interestingness,
+understanding, task completion, interest arousal, and efficiency --- at both turn and
+dialogue level, and found that the concept of satisfaction varies per user, with
+relevance the significant factor at turn level \cite{siro2023}. Rana et al. studied
+critiquing-based conversational recommendation with 228 participants and showed that the
+choice of underlying recommendation algorithm materially affects critiquing behaviour,
+failure rates, dialogue length, and satisfaction \cite{rana2024}.
 
-Methodologically, the closest parallel to the present study is Ziegfeld et al., who
-built three versions of a CRS and ran a between-subjects experiment with 66
-participants, measuring ten user experience constructs \cite{ziegfeld2025}. Notably,
-they found \textit{no} significant effects of their manipulation on any
-questionnaire-based subjective construct, although objective measures such as chat
-duration and recommendation match score did differ. Their manipulation concerned
-preference elicitation method rather than explanation content. The contrast with the
-present findings is instructive and is revisited in Section~\ref{sec:discussion}.
+Methodologically the closest parallel is Ziegfeld et al., who built three versions of a
+CRS and ran a between-subjects experiment with 66 participants across ten user experience
+constructs \cite{ziegfeld2025}. They found no significant effects of the three preference
+elicitation methods on any questionnaire-based construct, although objective measures such
+as chat duration and recommendation match score did differ. Their manipulation targeted
+preference elicitation rather than justification content; the contrast with the present
+findings is taken up in Section~\ref{sec:discussion}.
 
 \subsection{Trust and Purchase Intention in Recommender Systems}
 
 Trust in a technological artefact is conventionally decomposed into beliefs about
-competence, benevolence, and integrity \cite{mcknight2002}, and this
-three-dimensional structure underlies the explanation-to-trust mapping reported in
-\cite{wang2007}. For user-centric evaluation of recommenders more broadly, the ResQue
-framework of Pu, Chen, and Hu supplies validated constructs and design guidance,
-including the guidance that explaining \textit{why} an item is recommended increases
-transparency whereas explaining \textit{trade-offs} increases persuasion
-\cite{pu2012}. Perceived usefulness is measured following the technology acceptance
-tradition \cite{davis1989}.
+competence, benevolence, and integrity \cite{mcknight2002}, and this structure underlies
+the explanation-to-trust mapping reported in \cite{wang2007}. For user-centric evaluation
+of recommenders, the ResQue framework supplies validated constructs together with design
+guidance, including the guidance that explaining \textit{why} the system recommends an
+item increases transparency whereas explaining \textit{trade-offs} increases persuasion
+\cite{pu2012} --- a distinction that maps closely onto the comparison drawn in this study.
+Perceived usefulness is taken in the technology acceptance sense, as the degree to which a
+person believes that using a system would enhance performance \cite{davis1989}.
 
 The presumed chain from trust to purchase behaviour has been validated in the chatbot
-context by Yen and Chiang, who combined 204 questionnaire responses with EEG evidence
-from 30 participants and found credibility, competence, anthropomorphism, social
-presence, and informativeness to predict trust, which in turn predicted purchase
-intention \cite{yen2021}. Notably, they also found that media richness and
-playfulness did \textit{not} increase trust, reasoning that communication with a
-shopping chatbot is a functional task in which decorative cues are not what users
-seek. This is an early signal of the pattern the present study observes.
+context by Yen and Chiang, who combined 204 questionnaire responses with EEG evidence and
+found credibility, competence, anthropomorphism, social presence, and informativeness to
+influence trust in chatbots, which in turn affected purchase intention \cite{yen2021}.
+Notably, neither media richness nor playfulness positively influenced trust, which the
+authors attribute to communication with a shopping chatbot being a functional task. This
+is an early signal of the pattern the present study observes.
 
-Work on anthropomorphism qualifies the chain further. Cheng et al. found that both
-perceived warmth and perceived competence raise trust in chatbots, but that an
-exchange relationship, that is, a transactional context, strengthens the weight of
-competence \cite{cheng2022}. Li et al. modelled dual pathways in which chatbot warmth
-and competence generate both trust and chatbot overload, with both routes feeding
-service evaluation and subsequent purchase, which implies that trust is not the sole
-channel to behavioural intention \cite{liyang2025}. Crolic et al. supplied the
-strongest cautionary precedent, showing across five studies that anthropomorphising a
-service chatbot \textit{lowers} satisfaction, firm evaluation, and purchase intention
-for customers who arrive angry, via expectancy violation \cite{crolic2022}. The
-proposition that a more human-seeming agent is a better agent is therefore already
-contested in top-tier marketing research.
+Work on anthropomorphism qualifies the chain further. Cheng et al. found perceived warmth
+and perceived competence to positively affect trust in chatbots while communication delay
+reduced it, and, critically, that exchange relationships strengthen the importance of
+perceived competence on trust whereas communal relationships do not moderate the effect
+of warmth \cite{cheng2022}. Li et al. modelled parallel pathways in which chatbot warmth
+and competence affect both trust and chatbot overload, with both in turn shaping service
+evaluation and then customer purchase, implying that trust is not the sole channel to
+behavioural outcomes \cite{liyang2025}. Crolic et al. provide the strongest cautionary
+precedent: across five studies, when customers enter a chatbot-led interaction in an angry
+emotional state, chatbot anthropomorphism has a negative effect on satisfaction, firm
+evaluation, and subsequent purchase intentions, driven by expectancy violations caused by
+inflated pre-encounter expectations of chatbot efficacy \cite{crolic2022}. The premise
+that a more human-seeming agent is a better agent is therefore already contested.
 
-Most directly relevant, Li et al. examined anthropomorphic interaction style through
-the lens of mind perception across three experiments \cite{libaoku2024}. They found
-that for cognition-oriented service tasks a competent interaction style produced more
-positive consumer responses than a warm one, mediated by agent-mind perception,
-whereas for emotion-oriented tasks the reverse held, mediated by experience-mind
-perception. Their central claim, that no style is universally superior and that task
-type sets the boundary, provides the theoretical mechanism this paper invokes to
-explain its counter-intuitive result.
+Most directly relevant, Li et al. examined anthropomorphic interaction style through the
+lens of mind perception across three experiments \cite{libaoku2024}. For cognition-oriented
+service tasks, a competent interaction style improved consumer responses more effectively
+than a warm one, with agent-mind perception mediating; for emotion-oriented tasks a warm
+style improved responses, mediated by experience-mind perception. Their claim that no
+style is universally superior, and that task type sets the boundary, supplies the
+mechanism this paper invokes in Section~\ref{sec:discussion}.
 
 \subsection{Sensory and Hedonic Product Domains}
 
-Hedonic products are acquired for enjoyment, experience, and self-expression rather
-than function, and are judged against criteria that are subjective, difficult to
-verbalise, and unstable relative to the binary and stable criteria applied to
-utilitarian goods \cite{wangx2022}. This difference is not merely descriptive; it
-changes how information is processed.
+Hedonic products are judged against criteria that are subjective and unstable relative to
+the practical and comparatively stable criteria applied to utilitarian goods. Wang et al.
+showed across three studies that perceived deception damages online repurchase intention
+less for hedonic than for utilitarian products, attributing the difference to hedonic
+evaluation being more fluctuant and susceptible to change \cite{wangx2022}. Using
+clickstream data from a major online retailer, Varga and Albuquerque found that negative
+reviews significantly reduce purchase probability and increase search for substitutes, but
+that these effects apply to utilitarian products and not to hedonic ones, and to reviews
+concerning product functionality or customer service but not to taste-related factors
+\cite{varga2024}. Chen et al., as noted, found the effect of explanation itself to be
+domain-contingent \cite{chen2024}.
 
-Varga and Albuquerque, using clickstream data from a major online retailer, found
-that a single negative review significantly reduces purchase probability and
-increases search for substitutes, but that these effects hold for utilitarian product
-categories and not for hedonic ones, and hold for reviews about functionality or
-customer service but not for reviews about taste-related factors such as design,
-colour, or material \cite{varga2024}. Wang et al. showed across three studies that
-perceived deception damages online repurchase intention less for hedonic than for
-utilitarian products, attributing the difference to the fluctuant and susceptible
-nature of hedonic evaluation \cite{wangx2022}. Chen et al., as noted, found the effect
-of post hoc explanations themselves to be domain-contingent \cite{chen2024}.
-
-The cumulative implication is that XAI evidence gathered in rational domains does not
-automatically transfer to sensory ones. Existing sensory work concentrates on food and
-wine; to our knowledge no comparative test of XAI explanation types has been reported
-in the olfactory domain.
+The cumulative implication is that XAI evidence gathered in rational domains cannot be
+assumed to transfer to sensory ones. To the authors' knowledge, no comparative test of
+XAI explanation types has been reported in the olfactory domain.
 
 \subsection{Familiarity as a Boundary Condition}
 
-Domain familiarity is a plausible moderator of explanation effectiveness. Bayer et al.,
-using a purpose-built decision support system in the chess domain with 100
-participants, found that domain-specific expertise \textit{negatively} affects trust in
-an AI-based system, and, more pointedly for the present design, that the effect of
-explanation on trusting intention is moderated by expertise: users with high domain
-knowledge trust the system more when an explanation is provided, whereas users with low
-domain knowledge do not \cite{bayer2023}. Their conclusion is that explanations must fit
-the user.
+Domain familiarity is a plausible moderator of explanation effectiveness. Using an
+AI-based decision support system in the chess domain with 100 participants, Bayer et al.
+found that domain-specific expertise negatively affects trust, and, more pointedly for the
+present design, that users with high domain-specific knowledge are more willing to trust
+the system when an explanation is provided whereas users with low domain-specific
+knowledge are not \cite{bayer2023}. Their conclusion is that explanations must fit the
+user.
 
-Celar and Byrne provide the closest design analogue, crossing explanation type with
-domain familiarity explicitly across four experiments with 731 participants
-\cite{celar2023}. They found counterfactual explanations to be judged more helpful than
-causal ones, and, importantly for the comparative condition studied here, found that
-counterfactual explanations improved the accuracy of participants' \textit{own}
-decisions more than causal explanations did. They also found the effect of familiarity
-to be conditional on whether the AI was correct. Their sample size is a useful reference
-point when interpreting null moderation results obtained on smaller samples.
+Celar and Byrne provide the closest design analogue, crossing explanation type with domain
+familiarity across four experiments with 731 participants \cite{celar2023}. Participants
+judged counterfactual explanations more helpful than causal ones; counterfactuals did not
+improve the accuracy of their predictions of the AI's decisions, but did improve the
+accuracy of their own decisions; and the effect of familiarity depended on whether the AI
+was correct. Their sample size is a useful reference point when interpreting null
+moderation results obtained on smaller samples.
 
 \subsection{Research Positioning}
 
-Table~\ref{tab:positioning} situates this study against its three nearest antecedents.
-The present work is distinguished by the conjunction of three properties: explanation
-\textit{types} are compared against one another rather than against a no-explanation
-baseline; the comparison occurs inside a multi-turn LLM-driven conversation rather than a
-static display; and the domain is sensory-hedonic with a non-digitally-transmissible core
-attribute. In addition, the narrative-based condition operationalises explanation
-\textit{content} that is affective, which is distinct from the conversational
+Three antecedents locate this study most precisely. Wang and Benbasat \cite{wang2007}
+compared explanation types and decomposed trust into three dimensions, but did so on a
+static recommendation agent in a utilitarian domain. Chen et al. \cite{chen2024} compared
+domains and crossed presence with type, but on static recommendation displays rather than
+in dialogue. Ziegfeld et al. \cite{ziegfeld2025} ran a between-subjects experiment inside a
+multi-turn CRS, but manipulated preference elicitation rather than justification, and
+found no effect on subjective measures.
+
+The present study combines the three properties that these antecedents hold separately:
+justification types are compared against one another rather than against a
+no-explanation baseline; the comparison takes place inside a multi-turn, LLM-driven
+conversation; and the domain is sensory-hedonic, with a core attribute that cannot be
+conveyed through the interface at all. In addition, the narrative condition operationalises
+affective explanation \textit{content}, which is distinct from the conversational
 \textit{style} manipulations that dominate the anthropomorphism literature
 \cite{libaoku2024}, \cite{cheng2022}.
 
-\begin{table}[htbp]
-\caption{Positioning Relative to Nearest Prior Work}
-\begin{center}
-\renewcommand{\arraystretch}{1.15}
-\begin{tabular}{@{}p{0.9cm}p{1.6cm}p{1.5cm}p{1.5cm}p{1.5cm}@{}}
-\toprule
-& \textbf{Wang \& Benbasat \cite{wang2007}} & \textbf{Chen et al. \cite{chen2024}} & \textbf{Ziegfeld et al. \cite{ziegfeld2025}} & \textbf{This study} \\
-\midrule
-Setting & Static agent & Static display & Multi-turn CRS & Multi-turn CRS (LLM) \\
-Manipu\-lation & Explanation type (how/why/ trade-off) & Presence and type & Preference elicitation & Explanation type (A/B/C) \\
-Domain & Utilitarian & Both, compared & Utilitarian & Hedonic (perfume) \\
-Trust & Three dimensions & Aggregate & Not focal & Aggregate \\
-Outcome & Type-specific trust effects & Domain moderates type & No subjective effects & Type affects trust and PI \\
-\bottomrule
-\end{tabular}
-\label{tab:positioning}
-\end{center}
-\end{table}
-
-% ===============================================================
-% SECTIONS III-VII TO FOLLOW
 % ===============================================================
 \section{System Design}
 \label{sec:system}
