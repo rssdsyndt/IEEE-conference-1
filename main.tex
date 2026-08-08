@@ -425,79 +425,98 @@ Outcome & Type-specific trust effects & Domain moderates type & No subjective ef
 
 \subsection{Architecture Overview}
 
-The experimental platform is a conversational recommender agent for perfume,
-referred to here as the system. Its architecture separates two responsibilities that
-are frequently fused in LLM-based recommenders: \textit{language} and
-\textit{recommendation}. A large language model, GPT-4o-mini, conducts the dialogue,
-extracts preferences, and verbalises the justification. A separate backend, a
-conversational-recommendation hybrid knowledge graph embedding (CR-HKGE) module,
-selects the recommended items. Fig.~\ref{fig:arch} shows the arrangement.
+The experimental platform is Aromatique AI, a conversational recommender agent for
+perfume deployed as a web application and operated on site in a physical perfume
+store. Its architecture separates two responsibilities that are frequently fused in
+LLM-based recommenders: \textit{language} and \textit{recommendation}. A large
+language model, GPT-4o-mini, conducts the dialogue, extracts preferences, and
+verbalises the justification. A separate backend, a conversational-recommendation
+hybrid knowledge graph embedding (CR-HKGE) module, selects the recommended items.
+Fig.~\ref{fig:arch} shows the arrangement.
 
 \begin{figure}[htbp]
 \centerline{\PH{Fig. 1 --- architecture diagram to be inserted (fig1.png placeholder)}}
-\caption{System architecture. The explanation mode is switched at the
-system-prompt layer only; the CR-HKGE backend and therefore the recommended item
-set are identical across the three conditions.}
+\caption{System architecture. The LLM conducts the dialogue and phrases the
+justification; item selection is delegated to the CR-HKGE backend. The condition is
+set once, at the system-prompt layer, at the start of each session.}
 \label{fig:arch}
 \end{figure}
 
-Two properties of this arrangement matter for the validity of the experiment.
+Two properties of this arrangement matter for the interpretation of the experiment.
 
 First, \textit{the backend is a knowledge graph embedding model, not a
 retrieval-augmented generation pipeline}. Recommendations are produced by scoring
 candidate items in a learned embedding space over a structured perfume knowledge
-graph comprising \PH{number of entities, relations and items in the KG; source:
-dataset\_aromatique\_KG}, rather than by retrieving and summarising documents. The
-distinction is consequential: under RAG the textual material returned by retrieval
-would itself vary with the prompt, confounding the manipulation, whereas under
-knowledge graph embedding the candidate set is determined by the graph and is
-invariant to how the system is later asked to phrase its justification. The design
-follows the family of knowledge-graph-based recommenders that aggregate collaborative
-and semantic signals through graph attention \cite{litois2023}, \cite{elahi2024},
-including work that extends such graphs to conversational settings in order to capture
-implicit user states from dialogue context \cite{yang2025}.
+graph comprising \PH{number of entities, relations and items in the knowledge graph},
+rather than by retrieving and summarising documents. The design follows the family of
+knowledge-graph-based recommenders that aggregate collaborative and semantic signals
+through graph attention \cite{litois2023}, \cite{elahi2024}, including work that
+extends such graphs to conversational settings in order to capture implicit user
+states from dialogue context \cite{yang2025}.
 
 Second, \textit{the LLM acts as an interface rather than as the recommender}. This
 mirrors the agent pattern in which an LLM serves as the reasoning layer and
 domain-specific recommendation models serve as tools \cite{huang2023}, an arrangement
 motivated by the observation that LLMs lack domain-specific item catalogues and are
-prone to proposing items that do not exist in the target catalogue. Because item
-selection is delegated to the backend, changing the explanation mode cannot change
-\textit{what} is recommended, only \textit{how} the recommendation is justified. This
-is the mechanism by which the study isolates explanation type as the sole
-manipulated variable.
+prone to proposing items absent from the target catalogue. Item selection is therefore
+governed by a single scoring procedure that is identical in all three conditions; the
+LLM cannot substitute, reorder, or invent products.
 
-\subsection{Explanation Conditions}
+It is important to be precise about what this does and does not guarantee. The
+recommendation \textit{algorithm} is invariant across conditions. The recommended
+\textit{items} are not guaranteed to be, because the backend is queried with a
+preference representation that the dialogue itself produces, and the dialogue differs
+between conditions in the manner described below. This qualification is treated
+explicitly in Section~\ref{sec:discussion} rather than assumed away.
+\PH{Verify from the session logs whether the distribution of recommended products is
+comparable across the three conditions, and report the overlap; this materially
+strengthens or weakens the claim above.}
 
-Explanation mode is set by system-prompt conditioning at the start of each session,
-with no fine-tuning of the underlying model. This follows the prompting paradigm,
-one of the three paradigms, alongside pre-training and fine-tuning, by which LLMs are
-adapted to recommendation tasks \cite{zhao2024}. The practical advantage is that the
-independent variable becomes cheap to manipulate and straightforward for other
-researchers to replicate.
+\subsection{Experimental Conditions}
 
-Each participant receives the same three recommended perfumes from the backend and one
-of three justification styles. The three conditions instantiate three distinct
-justification logics, summarised in Table~\ref{tab:conditions}.
+The condition is set by system-prompt conditioning at the start of each session, with
+no fine-tuning of the underlying model. This follows the prompting paradigm, one of the
+three paradigms, alongside pre-training and fine-tuning, by which LLMs are adapted to
+recommendation tasks \cite{zhao2024}. The practical advantage is that the independent
+variable becomes inexpensive to manipulate and straightforward for other researchers to
+replicate; the three prompts are reproduced in full in the appendix.
+
+The manipulated variable is the \textit{justification logic} the agent applies, and it
+is applied consistently across the whole interaction rather than only at the moment of
+recommendation. Each prompt instructs the agent to maintain its assigned logic ``from
+your first greeting to your final closing message.'' In practice this means the ten
+elicitation questions are framed differently in each condition, as are the wording of
+acknowledgements and the final explanation. Table~\ref{tab:conditions} illustrates this
+with the parallel form of a single elicitation question and the corresponding
+explanation style.
+
+This is a deliberate design choice rather than an oversight. A system whose
+conversational framing contradicted its own explanations would be internally
+incoherent, and would be unlikely to occur in deployment. The cost of the choice is
+that the study manipulates justification logic as a whole and therefore cannot separate
+the contribution of explanation content from that of conversational framing. This
+limitation is stated in Section~\ref{sec:discussion}.
 
 \begin{table*}[htbp]
-\caption{The Three Explanation Conditions}
+\caption{The Three Experimental Conditions}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}p{0.9cm}p{2.6cm}p{2.3cm}p{4.2cm}p{5.2cm}@{}}
+\begin{tabular}{@{}p{0.7cm}p{2.2cm}p{2.1cm}p{5.0cm}p{5.0cm}@{}}
 \toprule
-& \textbf{Condition} & \textbf{Justification logic} & \textbf{Explanation content} & \textbf{Illustrative style} \\
+& \textbf{Condition} & \textbf{Justification logic} & \textbf{Elicitation framing (parallel item)} & \textbf{Explanation content} \\
 \midrule
-A & Feature-based & Attributive: \textit{what it is made of} & Olfactory family and dominant accords & ``This fragrance sits in the woody-aromatic family, with a dominant bergamot opening over a vetiver base.'' \\
-B & Narrative-based & Affective: \textit{how it will feel to you} & Emotion, occasion, and identity & ``This scent is like late afternoon in an old town, warm but never excessive, for someone calm who still leaves an impression.'' \\
-C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & Explicit differences among the three recommended items & ``Compared with X, which is sweeter, and Y, which is considerably heavier, this one is the most balanced.'' \\
+A & Feature-based & Attributive: \textit{what it is made of} & ``Do you prefer something dominantly fresh such as citrus or aquatic, something warm such as amber or woody, or something floral?'' & Names the olfactory family and main accords explicitly and connects each attribute to a stated preference. Explanations are independent; no product may be cross-referenced. \\
+B & Narrative-based & Affective: \textit{how it will feel to you} & ``When you wear this later, how do you want to feel --- more confident, calmer, or freer and more energised?'' & Connects the scent to a moment, mood, memory, or identity. Technical vocabulary is forbidden. Explanations are independent; no product may be cross-referenced. \\
+C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & ``Of these two broad characters --- fresh and light like morning air, versus warm and deep like wood or spice --- which are you closer to?'' & Positions each product against at least one other on character, intensity, or fit. Technical terms are permitted but must be immediately translated into comparative language. \\
 \bottomrule
 \end{tabular}
 \label{tab:conditions}
 \end{center}
-\footnotesize\textit{Note.} Illustrative styles are representative renderings.
-\PH{Replace with verbatim excerpts from real session transcripts, one per condition,
-and place the three full system prompts in an appendix.}
+\footnotesize\textit{Note.} Elicitation examples are translated from the Indonesian
+system prompts. In all conditions the agent is forbidden to disclose which explanation
+style it is using or to name competing brands.
+\PH{Add one verbatim recommendation excerpt per condition from a real session
+transcript.}
 \end{table*}
 
 Conditions A and C have established counterparts in the XAI literature. Condition A
@@ -513,22 +532,45 @@ conversational \textit{style} along the warmth-competence axis \cite{libaoku2024
 \cite{cheng2022}, but treat explanation \textit{content} as fixed. Condition B instead
 makes affective content the substance of the justification: it supplies no
 compositional facts and no comparative frame, only resonance. It is the condition
-closest in spirit to the user-based explanations that were found more effective in
-hedonic domains \cite{chen2024}, while differing in one respect examined in
+closest in spirit to the user-based explanations found more effective in hedonic
+domains \cite{chen2024}, while differing in one respect examined in
 Section~\ref{sec:discussion}: user-based explanations convey social proof, whereas
 purely narrative explanations convey none.
 
+One asymmetry between the prompts must be recorded here because it bears on a
+supplementary analysis reported later. The closing messages in conditions A and C
+instruct the agent to end with an invitation to smell the fragrances at the store's
+tester area; the closing message in condition B contains no such instruction. The
+consequences of this asymmetry are examined in Section~\ref{sec:discussion}.
+
 \subsection{Conversational Interface}
 
-A session proceeds in four stages: greeting and task framing; preference elicitation
-through open dialogue; presentation of three recommended perfumes together with the
-condition-appropriate explanation; and the post-session questionnaire. Preference
-elicitation is conducted in natural language rather than through forms or buttons,
-consistent with the low-guidance, low-restriction end of the elicitation spectrum
-\cite{ziegfeld2025}. Attributes elicited during dialogue include
-\PH{list the preference attributes the system elicits, e.g. occasion, intensity,
-preferred notes, gender presentation, budget}. Dialogues ran for
-\PH{mean number of turns and mean session duration}.
+A session proceeds in four stages: greeting and consent; preference elicitation;
+presentation of three ranked perfumes together with the condition-appropriate
+explanation; and the post-session questionnaire.
+
+Elicitation follows a fixed protocol of exactly ten questions, asked one per message,
+with the agent instructed never to bundle questions and to keep each reply to two or
+three sentences. In the terms introduced by Ziegfeld et al. \cite{ziegfeld2025}, this
+places the interface at the \textit{high-guidance, low-restriction} point of the
+elicitation space: the sequence of topics is fixed by the system, while responses are
+given in free-form natural language. The single exception is the first question, which
+records perfume familiarity through three selectable tags corresponding to beginner,
+enthusiast, and collector.
+
+The dialogue yields a structured preference record comprising familiarity, occasion,
+primary and secondary scent character, intensity, attributes to avoid, and free-text
+additional context. Whereas the fields are identical across conditions, their content
+is expressed in condition-specific vocabulary: scent character is captured as
+attributes in condition A, as moods in condition B, and as positions on contrasting
+spectra in condition C. This record is passed to the CR-HKGE backend, which returns
+three ranked products with their olfactory family and main accords; the LLM then
+phrases the justification according to its assigned logic.
+
+Sessions comprised a mean of 20.29 messages exchanged between user and agent
+(range 9 to 55) \PH{insert SD, and the mean per condition if available; comparable
+dialogue lengths across conditions would rule out interaction length as an alternative
+explanation for the observed differences}.
 
 % ===============================================================
 \section{Method}
@@ -537,45 +579,55 @@ preferred notes, gender presentation, budget}. Dialogues ran for
 \subsection{Experimental Design}
 
 The study uses a single-factor between-subjects design with three levels of
-explanation type (A: feature-based; B: narrative-based; C: comparative-based).
+justification logic (A: feature-based; B: narrative-based; C: comparative-based).
 Assignment to condition was determined by a session counter, producing balanced
 allocation of 30 participants per condition.
 
 A between-subjects design was chosen over a within-subjects alternative deliberately.
-Were a participant to experience all three explanation modes, the comparison would
-become explicit to them, inviting demand characteristics and carryover in how the
-later modes are judged. The cost of this choice is reduced statistical power,
-particularly for the interaction test reported in Section~\ref{sec:results}, and this
-cost is revisited in the limitations \PH{cite a standard experimental-design reference
-here, e.g. Shadish, Cook \& Campbell; not among the supplied source PDFs, verify
-independently}.
+Were a participant to experience all three modes, the comparison would become explicit
+to them, inviting demand characteristics and carryover in how the later modes are
+judged. The cost of this choice is reduced statistical power, particularly for the
+interaction test reported in Section~\ref{sec:results}, and this cost is revisited in
+the limitations \PH{cite a standard experimental-design reference here, e.g. Shadish,
+Cook \& Campbell; not among the supplied source PDFs, verify independently}.
 
 \subsection{Participants}
 
-Ninety participants completed the study, 30 in each condition. Familiarity with
-perfume was self-reported in three categories and dichotomised for analysis:
-respondents identifying as beginners were coded \textit{novice} (n = 30), while those
-identifying as enthusiasts or collectors were coded \textit{enthusiast} (n = 60).
+Ninety participants completed the study, 30 in each condition. Perfume familiarity was
+recorded at the first elicitation question using three selectable categories, and
+recruitment was balanced by quota across them: 30 beginners, 30 enthusiasts, and 30
+collectors.
 
+For analysis these three levels were dichotomised, with beginners coded \textit{novice}
+(n = 30) and enthusiasts and collectors together coded \textit{enthusiast} (n = 60).
 The dichotomisation is justified on construct grounds rather than convenience. What
-distinguishes the groups for the purposes of this study is not intensity of interest
-but command of olfactory vocabulary. Enthusiasts and collectors alike understand terms
-such as accord, sillage, and top, heart, and base notes; beginners generally do not.
-Because condition A rests entirely on that vocabulary, the boundary that matters falls
-between beginners and everyone else. The distribution across the three original
-categories was \PH{n for beginner / enthusiast / collector}.
+distinguishes the groups for present purposes is not intensity of interest but command
+of olfactory vocabulary. Enthusiasts and collectors alike understand terms such as
+accord, sillage, and top, heart, and base notes; beginners generally do not. Because
+condition A rests entirely on that vocabulary, the boundary that matters falls between
+beginners and everyone else.
 
-Familiarity was distributed evenly across conditions
-\PH{chi-square = 1.20, p = 0.549 --- reported in the project notes but the
-corresponding JASP contingency table and test output are not yet available; re-run and
-insert exact cell counts per condition}, which supports the interpretation that
-differences between conditions are not attributable to imbalance in sample
-composition.
+Two consequences follow, and both are relevant to the interpretation of the moderation
+test. First, the two-to-one imbalance between enthusiast and novice is a downstream
+consequence of this coding decision, not a failure of recruitment; the sample itself was
+balanced by design. Second, the resulting cells are small on the novice side, with 10,
+12, and 8 novices in conditions A, B, and C respectively, against 20, 18, and 22
+enthusiasts.
+
+Familiarity was nonetheless distributed evenly across conditions,
+$\chi^{2}(2) = 1.200$, $p = .549$, Cram\'{e}r's $V = 0.116$, with all expected counts at
+or above 10. Randomisation therefore succeeded on this dimension, which supports the
+interpretation that differences between conditions are not attributable to imbalance in
+sample composition.
 
 Demographic characteristics beyond familiarity, specifically age and gender, were not
-recorded. The consequences of this are stated in the limitations.
-\PH{Ethics approval and informed consent statement --- specify the approving body and
-reference number, or state the institutional procedure followed.}
+recorded; the consequences are stated in the limitations. Participation was voluntary
+and preceded by an on-screen consent notice stating that the system formed part of
+collaborative academic research at Universitas Gadjah Mada, that all responses would be
+fully anonymised, that the data would be used for academic purposes only, and that
+participation could be declined. Participants proceeded only after explicit
+affirmation. \PH{Add the ethics approval body and reference number if one was issued;
+if the institution required no formal review, state that explicitly.}
 
 \subsection{Measures}
 
@@ -616,18 +668,31 @@ ordinal, or Likert) needs to be specified.}
 One additional item, labelled \texttt{scent\_trial}, recorded whether the participant
 had actually smelled the recommended product. It is important to be precise about what
 this item measures: it is a record of \textit{sensory access already obtained}, not a
-statement of intention to obtain it. It therefore functions as an indicator of whether
-the participant had information the interface could not supply, and is treated as
-exploratory throughout.
+statement of intention to obtain it. In the present setting that distinction is
+meaningful, because the study took place in a store where the fragrances were
+physically available. The item therefore indicates whether the participant held
+information the interface itself could not supply, and it is treated as exploratory
+throughout.
 
 \subsection{Procedure}
 
-Participants were greeted and briefed on the task, interacted with the system until
-three recommendations and their accompanying explanation were delivered, and then
-completed the questionnaire. Participants were not told that explanation style was
-under investigation, nor that other versions of the system existed.
-\PH{Specify: recruitment channel, setting (remote or supervised), whether the session
-was timed, and any compensation.}
+The study was conducted offline, on the premises of a physical perfume store, with the
+system running as a web application on site. Two kinds of session were used: regular
+walk-in visits and mini-workshop sessions. Which of the two a given participant
+attended was not recorded, and the implications of this are stated in the limitations.
+
+Each participant read the consent notice, affirmed participation, and then interacted
+with the agent through the ten-question elicitation sequence until three ranked
+recommendations and their accompanying explanations were delivered. The questionnaire
+followed immediately. The consent screen advertised a duration of approximately ten
+minutes. Because the store's tester area was accessible throughout, participants were
+able to smell the recommended fragrances physically, and the \texttt{scent\_trial} item
+records whether they had done so.
+
+Participants were not told that justification logic was under investigation, nor that
+other versions of the system existed; the prompts explicitly forbid the agent from
+disclosing which style it is using. \PH{Specify the recruitment channel and any
+compensation offered.}
 
 \subsection{Manipulation Check}
 
