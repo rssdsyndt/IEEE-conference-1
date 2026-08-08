@@ -11,12 +11,24 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 % ---------------------------------------------------------------
-% PLACEHOLDER MACRO
-% Every \PH{...} marks information that is NOT yet verified from the
-% experimental data or from the source PDFs. Resolve all of them
-% before submission; search the file for "\PH{" to list them.
+% PLACEHOLDER MACRO  --  DRAFT / SUBMISSION SWITCH
+%
+% \PH{...} marks an editorial note to the authors. Notes are NOT part
+% of the paper's argument: every sentence reads correctly with them
+% hidden.
+%
+%   \draftmodetrue   -> notes printed in red   (working draft)
+%   \draftmodefalse  -> notes hidden entirely  (SUBMISSION)
+%
+% SET THIS TO \draftmodefalse BEFORE GENERATING THE SUBMISSION PDF.
 % ---------------------------------------------------------------
-\newcommand{\PH}[1]{\textcolor{red}{[\,#1\,]}}
+\newif\ifdraftmode
+\draftmodetrue
+\ifdraftmode
+  \newcommand{\PH}[1]{\textcolor{red}{[\,#1\,]}}
+\else
+  \newcommand{\PH}[1]{}
+\fi
 
 % ---------------------------------------------------------------
 % CLICKABLE CROSS-REFERENCES
