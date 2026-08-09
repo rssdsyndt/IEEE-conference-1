@@ -63,30 +63,27 @@
 \maketitle
 
 \begin{abstract}
-Explanations are widely assumed to increase user trust in AI-based recommender
-systems, yet accumulating evidence indicates that the effect depends on the kind
-of explanation provided rather than on its mere presence. Comparative evidence on
-explanation types remains scarce in conversational recommender systems, and is
-almost absent in sensory-hedonic domains, where the defining product attribute
-cannot be transmitted through a screen. This study reports a between-subjects
-experiment with 90 participants, 30 per condition, using a conversational
-recommender system for perfume in which a large language model handles dialogue
-while a knowledge-graph embedding backend produces the recommendations.
-Explanation type was manipulated purely through system-prompt conditioning, with
-no fine-tuning, across three conditions: feature-based, narrative-based, and
-comparative-based. Perceived trust and purchase intention were measured with
-adapted two-item scales and analysed using Kruskal-Wallis and Dunn tests.
-Explanation type significantly affected both trust and purchase intention, with a
-large and a medium-to-large effect size respectively. Contrary to the common
-design intuition that warmer and more relatable explanations build trust,
-narrative-based explanations produced the lowest trust, significantly below both
-objective-grounded conditions. Comparative-based explanations produced the highest
-purchase intention, significantly above the other two conditions. The association
-between trust and purchase intention was positive but weak (Spearman rho = 0.229,
-p = 0.030), and no evidence of moderation by perfume familiarity was found. The
-two design goals were therefore not achieved by the same condition, which
-indicates a concrete design trade-off for conversational recommender systems in
-hedonic domains.
+Explanations are widely assumed to increase user trust in AI-based recommender systems,
+yet evidence indicates that the effect depends on the kind of explanation given rather
+than on its presence. Comparative evidence on explanation types is scarce in
+conversational recommender systems and almost absent in sensory-hedonic domains, where
+the defining product attribute cannot be conveyed through a screen. This paper reports a
+between-subjects experiment with 90 participants, 30 per condition, conducted in a
+physical perfume store with an agent in which a large language model handles dialogue
+while a knowledge-graph embedding backend selects the items. Three justification logics
+were set by system-prompt conditioning without fine-tuning: feature-based,
+narrative-based, and comparative-based. Justification logic significantly affected both
+perceived trust and purchase intention, with a large and a medium-to-large effect
+respectively. Contrary to the design intuition that warmer explanations build trust,
+narrative justification produced the lowest trust, significantly below both
+objective-grounded conditions, whereas comparative justification produced the highest
+purchase intention. The association between trust and purchase intention was positive but
+weak (Spearman rho = 0.229, p = 0.030), and no evidence of moderation by perfume
+familiarity was found. Because trust was jointly highest under feature-based and
+comparative justification while purchase intention was highest under comparative
+justification alone, the two design objectives are not served by the same condition. The
+results suggest that what governs the response is the evaluative nature of the user's
+task rather than the hedonic nature of the product.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -98,382 +95,186 @@ intention, hedonic domain, user experience
 \section{Introduction}
 % ===============================================================
 
-Conversational recommender systems (CRS) support a task-oriented, multi-turn dialogue
-in which the system elicits a user's current preferences, provides explanations for its
-suggestions, and processes feedback \cite{jannach2021}. Large language models (LLMs)
-have made such systems inexpensive to build and natural to converse with, which sharpens
-a design question that predates them: when a recommender explains itself, what should it
-actually say?
+Conversational recommender systems (CRS) support a task-oriented, multi-turn dialogue in
+which the system elicits current preferences, explains its suggestions, and processes
+feedback \cite{jannach2021}. Large language models (LLMs) have made such systems
+inexpensive to build, which sharpens a design question that predates them: when a
+recommender explains itself, what should it say?
 
-Explainable AI (XAI) is widely positioned as the bridge between opaque recommendation
-models and users who must decide how far to rely on them; a systematic review of 97 user
-studies of model explanations organises the field around trust, understanding, usability,
-and human-AI collaboration performance \cite{rong2024}. Within recommender systems
-specifically, the canonical framing holds that explanations may serve seven aims ---
-effectiveness, satisfaction, transparency, scrutability, trust, persuasiveness, and
-efficiency --- and, critically, that these aims can be incompatible, so that an
+Explainable AI (XAI) is positioned as the bridge between opaque models and users deciding
+how far to rely on them \cite{rong2024}. The canonical framing for recommenders holds that
+explanations serve seven aims --- effectiveness, satisfaction, transparency, scrutability,
+trust, persuasiveness, efficiency --- and that these aims can be incompatible, so an
 explanation optimised for one may degrade another \cite{tintarev2012}. Consumer research
-supports the optimistic half of this framing: across four studies, the presence of post
-hoc explanations raised interpretability perceptions and, through them, trust, purchase
-intention, and click-through on AI recommendations \cite{chen2024}.
-
-The pessimistic half receives less attention in practice. In an experiment with 215
+supports the optimistic half: across four studies, post hoc explanations raised
+interpretability perceptions and, through them, trust, purchase intention, and
+click-through \cite{chen2024}. The pessimistic half receives less attention. With 215
 participants, feature-importance explanations produced higher trust than counterfactual
-explanations, and explanations raised trust even when the underlying system performed
-poorly, a pattern the authors read as overreliance rather than warranted trust
-\cite{brito2023}. Qualitative work on explanation interfaces reaches a compatible
-conclusion, documenting trust calibration errors in which users agree or disagree with a
-recommendation without deliberation \cite{naiseh2021}. Together, these results move the
-question from whether an explanation is present to which kind of explanation is given.
+ones, and explanations raised trust even when the system performed poorly, which the
+authors read as overreliance rather than warranted trust \cite{brito2023}; explanation
+interfaces can likewise induce trust calibration errors, in which users agree or disagree
+without deliberation \cite{naiseh2021}. The question therefore shifts from whether an
+explanation is present to which kind is given.
 
-Two gaps follow, and this paper addresses both.
+Two gaps follow. \textit{First, explanation types are seldom compared against one another
+inside a single conversational system.} The foundational demonstration that explanation
+type determines which component of trust is affected --- \textit{how} raising competence
+and benevolence, \textit{why} raising benevolence, \textit{trade-off} raising integrity ---
+used a static recommendation agent \cite{wang2007}. Later comparative work contrasts
+feature-importance with counterfactual explanations \cite{brito2023} or organises
+contrastive generation methods into a taxonomy \cite{stepin2021}, but outside
+conversational e-commerce.
 
-\textit{First, explanation types are seldom compared against one another inside a single
-conversational system.} The foundational demonstration that explanation type determines
-which component of trust is affected --- \textit{how} explanations raising competence and
-benevolence beliefs, \textit{why} explanations raising benevolence, and
-\textit{trade-off} explanations raising integrity --- was obtained on a static
-recommendation agent \cite{wang2007}. More recent comparative work contrasts
-feature-importance with counterfactual explanations \cite{brito2023}, or organises
-contrastive and counterfactual generation methods into a taxonomy \cite{stepin2021}, but
-does so outside conversational e-commerce. A head-to-head comparison of feature-based,
-narrative-based, and comparative-based justification within one LLM-driven CRS has not,
-to the authors' knowledge, been reported.
+\textit{Second, sensory-hedonic domains remain underexplored.} This matters because the
+effect of explanation is not domain invariant: it is stronger in utilitarian than hedonic
+decision domains, and explanation type interacts with domain, attribute-based explanations
+proving more effective in utilitarian settings and user-based ones in hedonic settings
+\cite{chen2024}. Converging evidence shows negative reviews depressing purchase for
+utilitarian but not hedonic products, and not for taste-related factors \cite{varga2024},
+and product type moderating the path from perceived deception to repurchase intention
+\cite{wangx2022}. Findings imported from rational domains cannot be assumed to transfer.
 
-\textit{Second, sensory-hedonic domains remain underexplored relative to utilitarian
-ones}, and the difference is consequential rather than cosmetic. The facilitating effect
-of post hoc explanations is stronger in the utilitarian than in the hedonic
-decision-making domain, and explanation type interacts with domain: attribute-based
-explanations are more effective at enhancing trust in utilitarian settings, whereas
-user-based explanations are more effective in hedonic ones \cite{chen2024}. Clickstream
-evidence converges from a different angle, showing that negative reviews reduce purchase
-probability and increase search for substitutes for utilitarian products but not for
-hedonic ones, and for reviews concerning product functionality or customer service but
-not for taste-related factors \cite{varga2024}. Product type similarly moderates the path
-from perceived deception to online repurchase intention, with hedonic purchases proving
-less sensitive \cite{wangx2022}. Findings obtained in rational domains therefore cannot
-be assumed to transfer.
+Perfume is an extreme case. Its defining attribute cannot be transmitted digitally at all,
+unlike the visual attributes of clothing or the auditory attributes of music; its
+vocabulary is mastered mainly by enthusiasts, making familiarity a plausible moderator;
+and online purchase uncertainty is correspondingly high.
 
-Perfume is an extreme case of the hedonic condition. Its defining attribute cannot be
-transmitted through a screen at all, unlike the visual attributes of clothing or the
-auditory attributes of music. Its descriptive vocabulary, comprising terms such as
-accord, sillage, and olfactory family, is commanded mainly by enthusiasts, which makes
-domain familiarity a plausible moderator of how a feature-based justification is
-received. The resulting purchase uncertainty is correspondingly high. If explanation
-design has domain-dependent effects, perfume is where they should be most visible.
+Three questions follow. \textbf{RQ1:} Does justification logic affect perceived trust and
+purchase intention? \textbf{RQ2:} Is trust associated with purchase intention?
+\textbf{RQ3:} Does perfume familiarity moderate the effect?
 
-Accordingly, this study asks three questions. \textbf{RQ1}: does the type of
-justification a conversational recommender offers affect perceived trust and purchase
-intention? \textbf{RQ2}: is perceived trust associated with purchase intention?
-\textbf{RQ3}: does perfume familiarity moderate the effect of justification type?
-
-The contributions are as follows.
-
-\begin{itemize}
-\item \textbf{An artefact.} A perfume CRS in which an LLM conducts the dialogue and a
-knowledge graph embedding backend selects the items, and in which three justification
-logics are instantiated by system-prompt conditioning alone, without fine-tuning.
-Because item selection is delegated to a backend whose scoring procedure is identical in
-every condition, the manipulation operates on how the system reasons aloud rather than
-on the recommendation procedure itself.
-
-\item \textbf{Comparative evidence from a hedonic domain.} A between-subjects field
-experiment with 90 participants, conducted in a physical perfume store where the
-recommended fragrances could actually be smelled, establishes that justification type
-significantly affects both perceived trust and purchase intention. This responds directly
-to the call for domain-sensitive evidence raised in \cite{chen2024}.
-
-\item \textbf{A counter-intuitive result with theoretical grounding.} Narrative-based
-justification, designed to be the warmest and most relatable of the three, produced the
-\textit{lowest} trust. The result inverts a prevailing design heuristic and is consistent
-with evidence that a competent conversational style outperforms a warm one on
-cognition-oriented tasks, mediated by agent-mind perception, while the reverse holds for
-emotion-oriented tasks \cite{libaoku2024}.
-
-\item \textbf{An explicit design trade-off.} The condition that maximised trust and the
-condition that maximised purchase intention were not the same, and the association
-between the two outcomes proved weak. This supplies empirical support for the claim that
-explanatory aims can conflict \cite{tintarev2012}, and indicates that comparative
-justification reaches purchase intention by a route that does not pass through trust.
-
-\item \textbf{Transparent treatment of null and weak results.} No evidence of moderation
-by familiarity was found, and the constraints that qualify this conclusion, together with
-those affecting a supplementary behavioural measure, are reported rather than suppressed.
-\end{itemize}
-
-The remainder of the paper is organised as follows. Section~\ref{sec:related} reviews
-explanation types in XAI and recommender systems, explanations in CRS, trust and purchase
-intention, hedonic product domains, and familiarity as a boundary condition.
-Section~\ref{sec:system} describes the system and the three conditions.
-Section~\ref{sec:method} presents the method. Section~\ref{sec:results} reports the
-results, Section~\ref{sec:discussion} interprets them and states the limitations, and
-Section~\ref{sec:conclusion} concludes.
+This paper contributes: (i) a perfume CRS in which an LLM handles language while a
+knowledge-graph embedding backend selects items, with justification logic switched by
+system-prompt conditioning alone; (ii) comparative empirical evidence in a domain whose
+core attribute is not digitally transmissible, responding to the call for domain-sensitive
+XAI evidence \cite{chen2024}; (iii) a counter-intuitive result, that narrative
+justification produced the \textit{lowest} trust, consistent with evidence that competent
+conversational styles outperform warm ones on cognition-oriented tasks
+\cite{libaoku2024}; (iv) an explicit design trade-off, since the conditions maximising
+trust and purchase intention differ; and (v) transparently reported null and weak results.
 
 % ===============================================================
 \section{Related Work}
 \label{sec:related}
 % ===============================================================
 
-\subsection{Explanation Types in XAI and Recommender Systems}
+\subsection{Explanation Type in XAI and Recommender Systems}
 
-Tintarev and Masthoff established the reference framing for explanation in recommender
-systems, in which explanations may serve seven aims and any evaluation must state which
-aim it targets because the aims can be incompatible \cite{tintarev2012}. Their own
-empirical studies illustrate the tension concretely: across two domains, personalising
-feature-based explanations proved detrimental to effectiveness even though it may improve
-user satisfaction, a result the authors report as contrary to their hypothesis. The
-structural lesson --- that a more appealing explanation can be a less useful one --- bears
-directly on the present study.
-
-Wang and Benbasat supplied the foundational demonstration that it is explanation
-\textit{type}, not explanation presence, that determines which component of trust is
-affected \cite{wang2007}. In a laboratory experiment with a purpose-built recommendation
-agent, the use of \textit{how} explanations increased competence and benevolence beliefs,
-\textit{why} explanations increased benevolence beliefs, and \textit{trade-off}
-explanations increased integrity beliefs. Their conclusion, that the effects of
-explanations depend largely on the contents and types of explanations provided, is the
-premise on which this study rests.
-
-Subsequent work has sharpened the picture without settling it. Stepin et al. conducted a
-systematic review of contrastive and counterfactual explanation and proposed a taxonomy
-covering both theoretical accounts and computational frameworks \cite{stepin2021}. De
-Brito Duarte et al. compared feature-importance against counterfactual explanations with
-215 participants and found trust higher under feature importance, while also observing
-that explanations increased trust even when the system was unreliable; they further note
-that other work suggests counterfactual explanations may be particularly advantageous
-where expert knowledge is available \cite{brito2023}. Naiseh et al. approach the same
-tension from the design side, deriving five principles intended to support calibrated
-rather than maximal trust \cite{naiseh2021}.
-
-Two broader observations frame these results. Reviewing 97 user studies of model
-explanations, Rong et al. concluded that the effectiveness of XAI in users' interaction
-with models is not consistent across applications, and that such evaluations rarely draw
-on cognitive or social science \cite{rong2024}. Domain-specific studies accordingly
-measure perception directly; de Campos et al., for instance, evaluate an explainable
-content-based recommender against transparency, satisfaction, trust, and scrutability in
-a user study \cite{decampos2024}.
-
-The anchor for the present work is Chen et al., who examined consumer responses to
-explainable AI recommendations across four studies \cite{chen2024}. The presence of post
-hoc explanations increased interpretability perceptions and, through them, trust,
-purchase intention, and click-through; the facilitating effect was stronger in the
-utilitarian than in the hedonic decision-making domain; and explanation type modulated
-effectiveness, with attribute-based explanations more effective at enhancing trust in
-utilitarian domains and user-based explanations more effective in hedonic ones. Their own
-conclusion is that there are no universally optimal post hoc explanations. The present
-study carries this line from static recommendation displays into multi-turn conversation
-and, as Section~\ref{sec:results} reports, obtains a result that runs against the
-direction their third finding would predict.
+Tintarev and Masthoff established the reference taxonomy of explanatory aims and showed
+empirically that personalising feature-based explanations was \textit{detrimental} to
+effectiveness while plausibly improving satisfaction, contrary to their own hypothesis
+\cite{tintarev2012}. Wang and Benbasat demonstrated that explanation type, not mere
+presence, determines which trusting belief is engaged \cite{wang2007}. Subsequent work
+refined the picture without resolving it: a taxonomy of contrastive and counterfactual
+generation methods \cite{stepin2021}; experimental evidence that feature-importance
+outperforms counterfactual explanation for non-experts, while also raising trust in an
+unreliable system \cite{brito2023}; and design principles aimed at trust calibration
+rather than trust maximisation \cite{naiseh2021}. A review of 97 user studies concludes
+that XAI effectiveness is \textit{not consistent across applications} \cite{rong2024}, and
+domain studies accordingly measure perception directly, against transparency,
+satisfaction, trust, and scrutability \cite{decampos2024}. The anchor for the present work
+is Chen et al., whose four studies establish that post hoc explanations raise
+interpretability and thence trust, that the effect is stronger in utilitarian than hedonic
+domains, and that attribute-based explanations suit utilitarian domains while user-based
+ones suit hedonic domains \cite{chen2024}.
 
 \subsection{Explanations in Conversational Recommender Systems}
 
-Jannach et al., surveying the CRS field, observe that although explanations are often
-considered a main feature of a convincing dialogue, these aspects are not explored a great
-deal \cite{jannach2021}. The intervening years have narrowed the gap only partially.
+Jannach et al. observe that although explanations are considered central to a convincing
+dialogue, the topic is not explored a great deal \cite{jannach2021}. Interactive
+conversational explanation has since been studied, with options to scrutinise explanatory
+arguments significantly improving user evaluation \cite{ziegler2023}; dialogue aspects
+shaping satisfaction have been annotated, with relevance dominant at turn level
+\cite{siro2023}; and the choice of recommendation algorithm has been shown to alter
+critiquing behaviour and satisfaction across 228 participants \cite{rana2024}. The closest
+methodological parallel built three CRS versions and ran a between-subjects experiment
+with 66 participants, finding \textit{no} significant effect on any questionnaire-based
+construct, though objective measures differed \cite{ziegfeld2025}. That manipulation
+concerned preference elicitation rather than explanation content.
 
-Hernandez-Bocanegra and Ziegler investigated conversational explanation delivery directly,
-contrasting a GUI-based dialogue with a chatbot-like natural-language interface while
-varying the degree of interactivity, and relating perceived explanation quality to
-transparency, trust, and effectiveness through structural equation modelling
-\cite{ziegler2023}. Providing interactive options for scrutinising explanatory arguments
-had a significant positive influence on user evaluations. Their manipulation, however,
-concerns interface and interactivity rather than the content of the explanation.
+\subsection{Trust, Purchase Intention, and Hedonic Domains}
 
-Siro et al. annotated CRS dialogues along six aspects --- relevance, interestingness,
-understanding, task completion, interest arousal, and efficiency --- at both turn and
-dialogue level, and found that the concept of satisfaction varies per user, with
-relevance the significant factor at turn level \cite{siro2023}. Rana et al. studied
-critiquing-based conversational recommendation with 228 participants and showed that the
-choice of underlying recommendation algorithm materially affects critiquing behaviour,
-failure rates, dialogue length, and satisfaction \cite{rana2024}.
+Trust in an artefact is conventionally decomposed into competence, benevolence, and
+integrity \cite{mcknight2002}; user-centric evaluation supplies validated constructs and
+the guidance that explaining \textit{why} increases transparency while explaining
+\textit{trade-offs} increases persuasion \cite{pu2012}; usefulness follows the technology
+acceptance tradition \cite{davis1989}. The trust-to-purchase chain has been validated for
+chatbots using questionnaires and EEG, though media richness and playfulness did
+\textit{not} raise trust, the authors reasoning that shopping conversation is a functional
+task \cite{yen2021}. Anthropomorphism qualifies the chain further: warmth and competence
+both raise trust, but exchange relationships strengthen the weight of competence
+\cite{cheng2022}; warmth and competence feed both trust and chatbot overload, so trust is
+not the sole channel to purchase \cite{liyang2025}; and anthropomorphism can backfire
+outright through expectancy violation \cite{crolic2022}. Most directly, no interaction
+style is universally superior: competent styles win cognition-oriented tasks and warm
+styles win emotion-oriented ones, mediated respectively by agent-mind and experience-mind
+perception \cite{libaoku2024}. Hedonic evaluation is subjective and unstable relative to
+utilitarian evaluation \cite{wangx2022}, \cite{varga2024}, and domain familiarity is a
+plausible boundary condition: expertise reduces trust in explainable decision support and
+moderates the effect of explanation on trusting intention \cite{bayer2023}, an interaction
+that required four experiments and 731 participants to characterise \cite{celar2023}.
 
-Methodologically the closest parallel is Ziegfeld et al., who built three versions of a
-CRS and ran a between-subjects experiment with 66 participants across ten user experience
-constructs \cite{ziegfeld2025}. They found no significant effects of the three preference
-elicitation methods on any questionnaire-based construct, although objective measures such
-as chat duration and recommendation match score did differ. Their manipulation targeted
-preference elicitation rather than justification content; the contrast with the present
-findings is taken up in Section~\ref{sec:discussion}.
-
-\subsection{Trust and Purchase Intention in Recommender Systems}
-
-Trust in a technological artefact is conventionally decomposed into beliefs about
-competence, benevolence, and integrity \cite{mcknight2002}, and this structure underlies
-the explanation-to-trust mapping reported in \cite{wang2007}. For user-centric evaluation
-of recommenders, the ResQue framework supplies validated constructs together with design
-guidance, including the guidance that explaining \textit{why} the system recommends an
-item increases transparency whereas explaining \textit{trade-offs} increases persuasion
-\cite{pu2012} --- a distinction that maps closely onto the comparison drawn in this study.
-Perceived usefulness is taken in the technology acceptance sense, as the degree to which a
-person believes that using a system would enhance performance \cite{davis1989}.
-
-The presumed chain from trust to purchase behaviour has been validated in the chatbot
-context by Yen and Chiang, who combined 204 questionnaire responses with EEG evidence and
-found credibility, competence, anthropomorphism, social presence, and informativeness to
-influence trust in chatbots, which in turn affected purchase intention \cite{yen2021}.
-Notably, neither media richness nor playfulness positively influenced trust, which the
-authors attribute to communication with a shopping chatbot being a functional task. This
-is an early signal of the pattern the present study observes.
-
-Work on anthropomorphism qualifies the chain further. Cheng et al. found perceived warmth
-and perceived competence to positively affect trust in chatbots while communication delay
-reduced it, and, critically, that exchange relationships strengthen the importance of
-perceived competence on trust whereas communal relationships do not moderate the effect
-of warmth \cite{cheng2022}. Li et al. modelled parallel pathways in which chatbot warmth
-and competence affect both trust and chatbot overload, with both in turn shaping service
-evaluation and then customer purchase, implying that trust is not the sole channel to
-behavioural outcomes \cite{liyang2025}. Crolic et al. provide the strongest cautionary
-precedent: across five studies, when customers enter a chatbot-led interaction in an angry
-emotional state, chatbot anthropomorphism has a negative effect on satisfaction, firm
-evaluation, and subsequent purchase intentions, driven by expectancy violations caused by
-inflated pre-encounter expectations of chatbot efficacy \cite{crolic2022}. The premise
-that a more human-seeming agent is a better agent is therefore already contested.
-
-Most directly relevant, Li et al. examined anthropomorphic interaction style through the
-lens of mind perception across three experiments \cite{libaoku2024}. For cognition-oriented
-service tasks, a competent interaction style improved consumer responses more effectively
-than a warm one, with agent-mind perception mediating; for emotion-oriented tasks a warm
-style improved responses, mediated by experience-mind perception. Their claim that no
-style is universally superior, and that task type sets the boundary, supplies the
-mechanism this paper invokes in Section~\ref{sec:discussion}.
-
-\subsection{Sensory and Hedonic Product Domains}
-
-Hedonic products are judged against criteria that are subjective and unstable relative to
-the practical and comparatively stable criteria applied to utilitarian goods. Wang et al.
-showed across three studies that perceived deception damages online repurchase intention
-less for hedonic than for utilitarian products, attributing the difference to hedonic
-evaluation being more fluctuant and susceptible to change \cite{wangx2022}. Using
-clickstream data from a major online retailer, Varga and Albuquerque found that negative
-reviews significantly reduce purchase probability and increase search for substitutes, but
-that these effects apply to utilitarian products and not to hedonic ones, and to reviews
-concerning product functionality or customer service but not to taste-related factors
-\cite{varga2024}. Chen et al., as noted, found the effect of explanation itself to be
-domain-contingent \cite{chen2024}.
-
-The cumulative implication is that XAI evidence gathered in rational domains cannot be
-assumed to transfer to sensory ones. To the authors' knowledge, no comparative test of
-XAI explanation types has been reported in the olfactory domain.
-
-\subsection{Familiarity as a Boundary Condition}
-
-Domain familiarity is a plausible moderator of explanation effectiveness. Using an
-AI-based decision support system in the chess domain with 100 participants, Bayer et al.
-found that domain-specific expertise negatively affects trust, and, more pointedly for the
-present design, that users with high domain-specific knowledge are more willing to trust
-the system when an explanation is provided whereas users with low domain-specific
-knowledge are not \cite{bayer2023}. Their conclusion is that explanations must fit the
-user.
-
-Celar and Byrne provide the closest design analogue, crossing explanation type with domain
-familiarity across four experiments with 731 participants \cite{celar2023}. Participants
-judged counterfactual explanations more helpful than causal ones; counterfactuals did not
-improve the accuracy of their predictions of the AI's decisions, but did improve the
-accuracy of their own decisions; and the effect of familiarity depended on whether the AI
-was correct. Their sample size is a useful reference point when interpreting null
-moderation results obtained on smaller samples.
-
-\subsection{Research Positioning}
-
-Three antecedents locate this study most precisely. Wang and Benbasat \cite{wang2007}
-compared explanation types and decomposed trust into three dimensions, but did so on a
-static recommendation agent in a utilitarian domain. Chen et al. \cite{chen2024} compared
-domains and crossed presence with type, but on static recommendation displays rather than
-in dialogue. Ziegfeld et al. \cite{ziegfeld2025} ran a between-subjects experiment inside a
-multi-turn CRS, but manipulated preference elicitation rather than justification, and
-found no effect on subjective measures.
-
-The present study combines the three properties that these antecedents hold separately:
-justification types are compared against one another rather than against a
-no-explanation baseline; the comparison takes place inside a multi-turn, LLM-driven
-conversation; and the domain is sensory-hedonic, with a core attribute that cannot be
-conveyed through the interface at all. In addition, the narrative condition operationalises
-affective explanation \textit{content}, which is distinct from the conversational
-\textit{style} manipulations that dominate the anthropomorphism literature
-\cite{libaoku2024}, \cite{cheng2022}.
+This study differs from its nearest antecedents on three axes simultaneously: explanation
+types are compared against one another rather than against a no-explanation baseline; the
+comparison occurs inside a multi-turn LLM-driven conversation rather than a static display
+\cite{wang2007}, \cite{chen2024}; and the domain is sensory-hedonic with a
+non-transmissible core attribute. Condition B further operationalises affective explanation
+\textit{content}, distinct from the conversational \textit{style} manipulations that
+dominate the anthropomorphism literature.
 
 % ===============================================================
 \section{System Design}
 \label{sec:system}
 % ===============================================================
 
-\subsection{Architecture Overview}
+\subsection{Architecture}
 
-The experimental platform is Aromatique AI, a conversational recommender agent for
-perfume, deployed as a web application and operated on site in a physical perfume store.
-Its architecture separates two responsibilities that LLM-based recommenders frequently
-fuse: \textit{language} and \textit{recommendation}. GPT-4o-mini conducts the dialogue,
-extracts preferences, and verbalises the justification; a conversational-recommendation
-hybrid knowledge graph embedding (CR-HKGE) backend selects the items. Fig.~\ref{fig:arch}
-shows the arrangement.
+The platform is a conversational perfume recommender deployed as a web application and
+operated on site in a physical perfume store. Its architecture separates two
+responsibilities that LLM-based recommenders often fuse: GPT-4o-mini conducts the
+dialogue, extracts preferences, and verbalises the justification, while a
+conversational-recommendation hybrid knowledge graph embedding (CR-HKGE) backend selects
+the items (Fig.~\ref{fig:arch}).
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=\columnwidth]{fig_architecture}}
-\caption{System architecture. The LLM conducts the dialogue and phrases the
-justification; item selection is delegated to the CR-HKGE backend, whose scoring
-procedure is identical in every condition. The condition is set once, at the
-system-prompt layer, at the start of each session, and governs both how preferences are
-elicited and how the recommendation is justified.}
+\caption{System architecture. Item selection is delegated to the CR-HKGE backend, whose
+scoring procedure is identical in every condition. The condition is set once, at the
+system-prompt layer, and governs both how preferences are elicited and how the
+recommendation is justified.}
 \label{fig:arch}
 \end{figure}
 
-Two properties of this arrangement bear on the interpretation of the experiment.
+Two properties matter. First, \textit{the backend is a knowledge graph embedding model,
+not a retrieval-augmented generation pipeline}: candidates are scored in a learned
+embedding space over a structured graph of 998 entities and 9,255 triples across seven
+relation types, comprising 340 catalogue products, 312 catalogue-side attribute entities
+(17 olfactory families, 110 accords, 185 visual notes), and a cross-reference layer of 346
+entities. Selecting three items from 340 is therefore a non-trivial retrieval problem. The
+design follows knowledge-graph recommenders that aggregate collaborative and semantic
+signals through graph attention \cite{litois2023}, \cite{elahi2024}, including work
+extending such graphs to conversational settings to capture a user's situation and
+emotional state from dialogue \cite{yang2025}.
 
-First, \textit{the backend is a knowledge graph embedding model rather than a
-retrieval-augmented generation pipeline}. Recommendations are produced by scoring
-candidate items in a learned embedding space over a structured perfume knowledge graph,
-not by retrieving and summarising documents. The graph holds 998 entities and 9,255
-triples across seven relation types: 340 catalogue products, 312 attribute entities on the
-catalogue side (17 olfactory families, 110 accords, 185 visual notes), and a
-cross-reference layer of 346 entities comprising 241 externally recognised perfumes with
-their 60 accords and 45 families, which supports inspired-by and semantic-similarity
-links. Selecting three items from 340 is therefore a non-trivial retrieval problem rather
-than a choice among a handful of alternatives. The design follows the family of
-knowledge-graph recommenders that aggregate collaborative and semantic signals through
-graph attention \cite{litois2023}, \cite{elahi2024}, including work extending such graphs
-to conversational settings in order to capture a user's implicit states, such as current
-situation and emotional state, from the dialogue context \cite{yang2025}.
-
-Second, \textit{the LLM acts as an interface rather than as the recommender}. This mirrors
-the agent pattern that employs LLMs as the brain and recommender models as tools
-\cite{huang2023}, an arrangement motivated by the observation that LLMs lack knowledge of
-domain-specific item catalogues, which in e-commerce leads them to propose products that
-do not exist. Item selection here is governed by a single scoring procedure identical in
-all three conditions; the LLM cannot substitute, reorder, or invent products.
-
-It is worth being precise about what this does and does not guarantee. The recommendation
-\textit{algorithm} is invariant across conditions. The recommended \textit{items} are not
-guaranteed to be, because the backend is queried with a preference representation that the
-dialogue itself produces, and the dialogue differs between conditions in the manner
-described next. Section~\ref{sec:discussion} treats this qualification explicitly rather
-than assuming it away.
-\PH{Verify from the session logs whether the distribution of recommended products is
-comparable across conditions, and report the overlap; this materially strengthens or
-weakens the claim above.}
+Second, \textit{the LLM is an interface, not the recommender}, mirroring the pattern that
+employs LLMs as the brain and recommender models as tools \cite{huang2023}, motivated by
+the observation that LLMs lack knowledge of domain-specific item catalogues and propose
+products that do not exist. The recommendation \textit{algorithm} is therefore invariant
+across conditions. The recommended \textit{items} are not guaranteed to be, because the
+backend is queried with a preference record the dialogue itself produces, and the dialogue
+differs by condition; Section~\ref{sec:discussion} treats this explicitly.
 
 \subsection{Experimental Conditions}
 
 The condition is fixed by system-prompt conditioning at the start of each session, with no
-fine-tuning. This follows the prompting paradigm, one of the three paradigms alongside
-pre-training and fine-tuning by which LLMs are adapted to recommendation tasks
-\cite{zhao2024}, and it makes the independent variable inexpensive to manipulate and
-straightforward to replicate.
-\PH{Confirm that the venue accepts supplementary material; if so, state here that the
-three system prompts are provided as such.}
-
-The manipulated variable is the \textit{justification logic} the agent applies, and it
-governs the whole interaction rather than only the moment of recommendation. Each prompt
-instructs the agent to hold its assigned logic ``from your first greeting to your final
-closing message,'' so the ten elicitation questions are framed differently in each
-condition, as are the acknowledgements and the final explanation. Table~\ref{tab:conditions}
-gives the parallel form of one elicitation question alongside the corresponding
-explanation content.
-
-This is a deliberate design decision rather than an oversight. A system whose
-conversational framing contradicted its own explanations would be internally incoherent
-and unlikely to occur in deployment. Its cost is that the study manipulates justification
-logic as a whole and cannot separate the contribution of explanation content from that of
-conversational framing, a limitation stated in Section~\ref{sec:discussion}.
+fine-tuning, following the prompting paradigm by which LLMs are adapted to recommendation
+tasks \cite{zhao2024}. The manipulated variable is the \textit{justification logic}, and it
+governs the whole interaction: each prompt instructs the agent to hold its assigned logic
+``from your first greeting to your final closing message,'' so the ten elicitation
+questions are framed differently in each condition, as is the final explanation
+(Table~\ref{tab:conditions}). This is deliberate --- a system whose conversational framing
+contradicted its own explanations would be internally incoherent --- but its cost is that
+explanation content cannot be separated from conversational framing.
 
 \begin{table*}[htbp]
 \caption{The Three Experimental Conditions}
@@ -483,154 +284,105 @@ conversational framing, a limitation stated in Section~\ref{sec:discussion}.
 \toprule
 & \textbf{Condition} & \textbf{Justification logic} & \textbf{Elicitation framing (parallel item)} & \textbf{Explanation content} \\
 \midrule
-A & Feature-based & Attributive: \textit{what it is made of} & ``Do you prefer something dominantly fresh such as citrus or aquatic, something warm such as amber or woody, or something floral?'' & Names the olfactory family and main accords explicitly and ties each attribute to a stated preference. Explanations are independent; cross-referencing other products is forbidden. \\
-B & Narrative-based & Affective: \textit{how it will feel to you} & ``When you wear this later, how do you want to feel --- more confident, calmer, or freer and more energised?'' & Connects the scent to a moment, mood, memory, or identity. Technical vocabulary is forbidden. Explanations are independent; cross-referencing is forbidden. \\
-C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & ``Of these two broad characters --- fresh and light like morning air, versus warm and deep like wood or spice --- which are you closer to?'' & Positions each product against at least one other on character, intensity, or fit. Technical terms are permitted but must be translated immediately into comparative language. \\
+A & Feature-based & Attributive: \textit{what it is made of} & ``Do you prefer something dominantly fresh such as citrus or aquatic, something warm such as amber or woody, or something floral?'' & Names the olfactory family and main accords and ties each attribute to a stated preference. Cross-referencing other products is forbidden. \\
+B & Narrative-based & Affective: \textit{how it will feel to you} & ``When you wear this later, how do you want to feel --- more confident, calmer, or freer and more energised?'' & Connects the scent to a moment, mood, memory, or identity. Technical vocabulary is forbidden, as is cross-referencing. \\
+C & Comparative-based & Contrastive: \textit{how it differs from the alternatives} & ``Of these two broad characters --- fresh and light like morning air, versus warm and deep like wood or spice --- which are you closer to?'' & Positions each product against at least one other on character, intensity, or fit. Technical terms must be translated into comparative language. \\
 \bottomrule
 \end{tabular}
 \label{tab:conditions}
 \end{center}
 \footnotesize\textit{Note.} Elicitation examples are translated from the Indonesian system
-prompts. In every condition the agent is forbidden to disclose which style it is using or
-to name competing brands.
+prompts. In every condition the agent is forbidden to disclose which style it is using.
 \end{table*}
 
-The contrast is visible in how the three logics render the same product. For one perfume
-recommended in all three conditions, condition A produced ``\textit{it belongs to the
-AQUATIC family with green and fresh-spicy as its main character --- exactly what you are
-looking for in an office setting}''; condition B produced ``\textit{picture a fresh scent
-flowing gently, like morning dew, giving you new energy and confidence}''; and condition C
-produced ``\textit{it is the freshest and brightest of the three --- it foregrounds
-freshness with a woody touch}''. The excerpts come from three different sessions, so the
-elicited preferences differ, which is why A frames the product for office use and C for a
-relaxed setting. Inspection of the condition C transcripts confirms that comparative
-explanations consistently name one or two co-recommended products as explicit comparators.
+The contrast is visible in how the logics render the same product. Condition A produced
+``\textit{it belongs to the aquatic family with green and fresh-spicy as its main character
+--- exactly what you are looking for in an office setting}''; condition B, ``\textit{picture
+a fresh scent flowing gently, like morning dew, giving you new energy and confidence}'';
+condition C, ``\textit{it is the freshest and brightest of the three --- it foregrounds
+freshness with a woody touch}''. Inspection of the condition C transcripts confirms that
+comparative explanations consistently name one or two co-recommended products as explicit
+comparators.
 
-Conditions A and C have established counterparts in the XAI literature. Condition A
-corresponds to attribute-based or feature-importance explanation, the form shown to yield
-higher trust than counterfactual explanation among non-expert users \cite{brito2023}.
-Condition C corresponds to contrastive explanation, for which a taxonomy of generation
-methods exists \cite{stepin2021} and which has been shown to improve the accuracy of
-users' own decisions relative to causal explanation \cite{celar2023}.
-
-Condition B is the novel element. The CRS and anthropomorphism literatures examine
+Conditions A and C have established counterparts: attribute-based explanation, shown to
+yield higher trust than counterfactual explanation for non-experts \cite{brito2023}, and
+contrastive explanation \cite{stepin2021}, shown to improve the accuracy of users' own
+decisions \cite{celar2023}. Condition B is the novel element. The literature examines
 conversational \textit{style} on the warmth-competence axis \cite{libaoku2024},
-\cite{cheng2022} while treating explanation \textit{content} as fixed. Condition B instead
-makes affective content the substance of the justification: it supplies no compositional
-facts and no comparative frame, only resonance. It is closest in spirit to the user-based
-explanations found more effective in hedonic domains \cite{chen2024}, while differing in
-one respect examined in Section~\ref{sec:discussion}: user-based explanations carry social
-proof, whereas purely narrative explanations carry none.
+\cite{cheng2022} while treating explanation \textit{content} as fixed; condition B instead
+makes affective content the substance of the justification, supplying no compositional
+facts and no comparative frame. It is closest to the user-based explanations found more
+effective in hedonic domains \cite{chen2024}, differing in one respect examined later:
+user-based explanations carry social proof, purely narrative ones carry none.
 
-One asymmetry between the prompts is recorded here because it bears on a supplementary
-analysis reported later. The closing messages in conditions A and C instruct the agent to
-end by inviting the user to smell the fragrances at the store's tester area; the closing
-message in condition B contains no such instruction.
+One asymmetry is recorded because it bears on a later analysis: the closing messages in
+conditions A and C invite the user to smell the fragrances at the store's tester area,
+whereas condition B contains no such instruction.
 
 \subsection{Conversational Interface}
 
-A session proceeds in four stages: greeting and consent; preference elicitation;
-presentation of three ranked perfumes with the condition-appropriate explanation; and the
-post-session questionnaire.
-
-Elicitation follows a fixed protocol of exactly ten questions, asked one per message, with
-the agent instructed never to bundle questions and to keep each reply to two or three
-sentences. In the terms introduced by Ziegfeld et al. \cite{ziegfeld2025}, this places the
-interface at the \textit{high-guidance, low-restriction} point of the elicitation space:
-the system fixes the sequence of topics while responses are given in free-form natural
-language. The sole exception is the first question, which records perfume familiarity
-through three selectable tags corresponding to beginner, enthusiast, and collector.
-
-The dialogue yields a structured preference record comprising familiarity, occasion,
-primary and secondary scent character, intensity, attributes to avoid, and free-text
-context. The fields are identical across conditions, but their content is expressed in
-condition-specific vocabulary: scent character is captured as attributes in condition A, as
-moods in condition B, and as positions on contrasting spectra in condition C. The record is
-passed to the CR-HKGE backend, which returns three ranked products with their olfactory
-family and main accords; the LLM then phrases the justification in its assigned logic.
-
-Sessions comprised a mean of 20.29 messages exchanged between participant and agent
-($SD = 4.67$, range 9 to 55). Length was comparable across conditions --- 20.60 in A, 19.20
-in B, and 21.07 in C, a spread of under two messages --- which makes interaction length an
-unlikely alternative explanation for the differences reported in
-Section~\ref{sec:results}. Variability was greater in condition A ($SD = 7.03$) than in B
-($SD = 2.89$) or C ($SD = 2.65$), indicating a small number of unusually long feature-based
-sessions rather than a systematic difference in dialogue length.
+A session proceeds through greeting and consent, preference elicitation, presentation of
+three ranked perfumes with the condition-appropriate explanation, and the questionnaire.
+Elicitation follows a fixed protocol of exactly ten questions, one per message. In the
+terms of Ziegfeld et al. \cite{ziegfeld2025} this is the \textit{high-guidance,
+low-restriction} point of the elicitation space: the system fixes the topic sequence while
+answers are free text. The first question records familiarity through three selectable
+tags. The dialogue yields a preference record of familiarity, occasion, primary and
+secondary scent character, intensity, attributes to avoid, and free-text context; the
+fields are identical across conditions but their content is expressed in condition-specific
+vocabulary. Sessions comprised a mean of 20.29 messages ($SD = 4.67$, range 9--55), with
+means of 20.60 in A, 19.20 in B, and 21.07 in C, so interaction length is an unlikely
+alternative explanation for the differences reported below.
 
 % ===============================================================
 \section{Method}
 \label{sec:method}
 % ===============================================================
 
-\subsection{Experimental Design}
+\subsection{Design and Participants}
 
 The study uses a single-factor between-subjects design with three levels of justification
-logic (A: feature-based; B: narrative-based; C: comparative-based). Assignment was
-determined by a session counter, yielding 30 participants per condition.
+logic. Assignment was by session counter, yielding 30 participants per condition. A
+between-subjects design was preferred deliberately: had participants experienced all three
+logics, the comparison would have become explicit, inviting demand characteristics and
+carryover. The cost is reduced power for the interaction test.
 
-A between-subjects design was preferred to a within-subjects alternative deliberately. Had
-a participant experienced all three logics, the comparison would have become explicit,
-inviting demand characteristics and carryover in how the later conditions were judged. The
-cost is reduced statistical power, particularly for the interaction test, and this cost is
-revisited in the limitations.
+Ninety participants completed the study. Familiarity was recorded at the first elicitation
+question, and recruitment was quota-balanced across its three levels: 30 beginners, 30
+enthusiasts, 30 collectors. For analysis these were dichotomised, beginners coded
+\textit{novice} ($n = 30$) and enthusiasts with collectors coded \textit{enthusiast}
+($n = 60$). The dichotomisation rests on construct grounds: what separates the groups is
+command of olfactory vocabulary, since enthusiasts and collectors alike understand terms
+such as accord and sillage while beginners do not, and condition A rests entirely on that
+vocabulary. Two consequences follow. The two-to-one imbalance is a downstream consequence
+of this coding decision, not a recruitment failure. And the novice cells are small: 10, 12,
+and 8 in conditions A, B, and C, against 20, 18, and 22 enthusiasts. Familiarity was
+nonetheless evenly distributed, $\chi^{2}(2) = 1.200$, $p = .549$, Cram\'{e}r's
+$V = 0.116$, all expected counts at or above 10.
 
-\subsection{Participants}
+Age and gender were not recorded. Participation was voluntary and preceded by an on-screen
+consent notice stating that the system formed part of collaborative academic research at
+the authors' institution, that responses would be fully anonymised, that data would be used
+for academic purposes only, and that participation could be declined. No personally
+identifying information was collected, responses were anonymised at capture, and no
+compensation was offered. The study involved no deception beyond withholding the research
+hypothesis, no sensitive data, and no vulnerable population. The study was not submitted
+for formal institutional ethics review.
 
-Ninety participants completed the study, 30 in each condition. Perfume familiarity was
-recorded at the first elicitation question using three selectable categories, and
-recruitment was balanced by quota across them: 30 beginners, 30 enthusiasts, and 30
-collectors.
+\subsection{Measures and Procedure}
 
-For analysis the three levels were dichotomised, with beginners coded \textit{novice}
-($n = 30$) and enthusiasts and collectors together coded \textit{enthusiast} ($n = 60$).
-The dichotomisation rests on construct grounds rather than convenience. What separates the
-groups for present purposes is not intensity of interest but command of olfactory
-vocabulary: enthusiasts and collectors alike understand terms such as accord, sillage, and
-top, heart, and base notes, whereas beginners generally do not. Because condition A rests
-entirely on that vocabulary, the boundary that matters falls between beginners and
-everyone else.
-
-Two consequences follow, both relevant to the moderation test. First, the two-to-one
-imbalance between enthusiast and novice is a downstream consequence of this coding
-decision, not a failure of recruitment; the sample itself was balanced by design. Second,
-the resulting novice cells are small, with 10, 12, and 8 novices in conditions A, B, and C
-respectively, against 20, 18, and 22 enthusiasts.
-
-Familiarity was nonetheless evenly distributed across conditions,
-$\chi^{2}(2) = 1.200$, $p = .549$, Cram\'{e}r's $V = 0.116$, with all expected counts at or
-above 10. Randomisation therefore succeeded on this dimension, which supports the
-interpretation that differences between conditions are not attributable to imbalance in
-sample composition.
-
-Demographic characteristics beyond familiarity, specifically age and gender, were not
-recorded; the consequences are stated in the limitations. Participation was voluntary and
-preceded by an on-screen consent notice stating that the system formed part of
-collaborative academic research at the authors' institution, that all responses would be
-fully anonymised, that the data would be used for academic purposes only, and that
-participation could be declined. Participants proceeded only after explicit affirmation.
-No personally identifying information was collected, responses were anonymised at the
-point of capture, and no compensation was offered that might have induced participation.
-The study involved no deception beyond withholding the research hypothesis, no sensitive
-personal data, and no vulnerable population. Formal institutional ethics review was not
-sought prior to data collection.
-\PH{If the institution subsequently confirms that studies of this type are exempt from
-review, replace the final sentence with that determination. Restore the institution name
-in the camera-ready version.}
-
-\subsection{Measures}
-
-Four constructs were measured with two items each on five-point Likert scales, giving
-eight items in total, listed in Table~\ref{tab:items}. Trust items were adapted from the
-trusting-beliefs tradition, in which trust in an artefact is decomposed into competence,
-benevolence, and integrity \cite{mcknight2002}. Purchase intention and satisfaction items
-were adapted from the ResQue framework for user-centric evaluation of recommender systems
-\cite{pu2012}, and usefulness items from the technology acceptance tradition
-\cite{davis1989}. All items were administered in Indonesian.
+Four constructs were measured with two items each on five-point Likert scales
+(Table~\ref{tab:items}). Trust items were adapted from the trusting-beliefs tradition
+\cite{mcknight2002}, purchase intention and satisfaction from the ResQue framework
+\cite{pu2012}, and usefulness from the technology acceptance tradition \cite{davis1989}.
+All items were administered in Indonesian. A ninth, binary item recorded whether the
+participant had already smelled the recommended product; it measures \textit{sensory access
+already obtained}, not an intention to obtain it, and is treated as exploratory.
 
 \begin{table*}[htbp]
 \caption{Measurement Instrument}
 \begin{center}
-\renewcommand{\arraystretch}{1.2}
+\renewcommand{\arraystretch}{1.15}
 \begin{tabular}{@{}p{1.1cm}p{3.4cm}p{11.3cm}@{}}
 \toprule
 \textbf{Code} & \textbf{Construct} & \textbf{Item (translated from Indonesian)} \\
@@ -651,133 +403,71 @@ S2 & User satisfaction & I would recommend this chatbot to others who want to ch
 \end{center}
 \end{table*}
 
-A ninth, binary item labelled \texttt{scent\_trial} recorded whether the participant had
-already smelled the recommended product. It is worth being precise about what this
-measures: it records \textit{sensory access already obtained}, not an intention to obtain
-it. In the present setting the distinction is meaningful, because the study took place in
-a store where the fragrances were physically available. The item therefore indicates
-whether a participant held information the interface itself could not supply, and it is
-treated as exploratory throughout.
+The study ran offline on the premises of a physical perfume store, with the system running
+on site during normal operating sessions. Participants read the consent notice, worked
+through the ten-question sequence until three ranked recommendations and their explanations
+were delivered, and completed the questionnaire; the consent screen advertised
+approximately ten minutes. Because the tester area remained accessible, participants could
+smell the recommended fragrances physically. Participation arose from an institutional
+collaboration with the store rather than a recruitment campaign. Participants were not told
+that justification logic was under investigation.
 
-\subsection{Procedure}
+\subsection{Manipulation Check and Analysis Plan}
 
-The study was conducted offline, on the premises of a physical perfume store, with the
-system running as a web application on site during the store's normal operating sessions.
-Each participant read the consent notice, affirmed participation, and then worked through
-the ten-question elicitation sequence until three ranked recommendations and their
-explanations were delivered; the questionnaire followed immediately. The consent screen
-advertised a duration of approximately ten minutes. Because the store's tester area
-remained accessible throughout, participants were able to smell the recommended fragrances
-physically, and the \texttt{scent\_trial} item records whether they had done so.
+To verify that conditions were distinguishable from transcripts alone, 30 transcripts, 10
+per condition, were coded by three sources: the system-recorded condition
+(\textit{actual}), the researcher (\textit{self}), and an independent rater blind to
+assignment (\textit{rater}). Agreement was quantified with Cohen's kappa against the
+benchmarks of Landis and Koch, who assign 0.61--0.80 to substantial and 0.81--1.00 to
+almost perfect agreement while noting the divisions are arbitrary \cite{landis1977}.
+Because self-coding was not blind, evidentiary weight rests on the independent rater, and
+the coefficients are reported separately rather than averaged.
 
-Participation arose from an institutional collaboration with the store rather than from a
-recruitment campaign, and no compensation was offered. Participants were not told that
-justification logic was under investigation, nor that other versions of the system
-existed; the prompts explicitly forbid the agent from disclosing which style it is using.
-
-\subsection{Manipulation Check}
-
-To verify that the three conditions were distinguishable from the transcripts alone, a
-subsample of 30 session transcripts, 10 per condition, was coded by three independent
-sources: the ground-truth condition recorded by the system (\textit{actual}), a coding by
-the researcher (\textit{self}), and a coding by an independent rater blind to condition
-assignment (\textit{rater}). Agreement was quantified with Cohen's kappa and interpreted
-against the benchmarks of Landis and Koch, who assign values of 0.61--0.80 to substantial
-and 0.81--1.00 to almost perfect agreement while noting that such divisions are
-arbitrary \cite{landis1977}.
-
-The researcher's dual role as experimenter and coder is acknowledged explicitly. Because
-self-coding cannot be considered blind, the evidentiary weight of the manipulation check
-rests on the independent rater, and the rater-based and self-based coefficients are
-reported separately in Section~\ref{sec:results} rather than averaged into a single
-figure.
-
-\subsection{Analysis Plan}
-
-\subsubsection{Scale reliability}
-Cronbach's alpha is downward-biased and unstable for two-item scales. Reliability was
-therefore assessed with the Spearman-Brown coefficient, the estimator examined for
-two-item scales in \cite{eisinga2013}. Average inter-item correlations are reported
-alongside the coefficients, since with two items the coefficient is a direct function of a
-single correlation and that correlation is the more interpretable quantity.
-\PH{The Eisinga et al. paper was not available as a source PDF; confirm that its stated
-recommendation is Spearman-Brown before submission.}
-
-\subsubsection{Choice of non-parametric tests}
-Shapiro-Wilk tests indicated departures from normality in several condition cells, and
-Levene's test indicated heterogeneity of variance for perceived trust. Rank-based
-procedures were therefore adopted: Kruskal-Wallis for comparisons across the three
-conditions, Dunn's test with Holm correction for pairwise comparisons, Spearman's rho for
-association, and the Wilcoxon signed-rank test for comparisons against a fixed reference
-value. Parametric analyses of variance were also computed and are reported for reference,
-but inference rests on the rank-based results.
-
-\subsubsection{Effect size}
-For Kruskal-Wallis, epsilon-squared was computed as $\varepsilon^{2} = H/(n-1)$, the
-rank-based analogue of eta-squared, and is reported for every omnibus test: a p-value
-indicates only that an effect exists, whereas $\varepsilon^{2}$ indicates its magnitude.
-Rank-biserial correlations are reported for pairwise comparisons.
-
-\subsubsection{Moderation}
-The moderation hypothesis was tested with a two-way analysis of variance crossing condition
-with dichotomised familiarity. This introduces an acknowledged inconsistency: the main
-analyses are rank-based because normality was violated, whereas the moderation test is
-parametric. The reason is practical rather than principled, in that no comparably
-established rank-based test exists for a two-factor interaction. The inconsistency is
-flagged here rather than left for the reader to find, and the result is interpreted with
-corresponding caution.
-
-All analyses were conducted in JASP v0.97.1.
+Cronbach's alpha is downward-biased for two-item scales, so reliability was estimated with
+the Spearman-Brown coefficient, the estimator examined for such scales in
+\cite{eisinga2013}, reported with average inter-item correlations. Shapiro-Wilk tests
+indicated departures from normality in several cells and Levene's test heterogeneity of
+variance for trust, so rank-based procedures were adopted: Kruskal-Wallis, Dunn's test with
+Holm correction, Spearman's rho, and Wilcoxon signed-rank. Effect size was computed as
+$\varepsilon^{2} = H/(n-1)$, with rank-biserial correlations for pairwise comparisons. The
+moderation hypothesis was tested with a two-way analysis of variance, an acknowledged
+inconsistency adopted for want of an established rank-based test of a two-factor
+interaction. Analyses used JASP v0.97.1.
 
 % ===============================================================
 \section{Results}
 \label{sec:results}
 % ===============================================================
 
-\subsection{Manipulation Check}
+\subsection{Manipulation Check and Reliability}
 
-Agreement on the 30 blind-coded transcripts was high. The independent rater reproduced the
-system-recorded condition with $\kappa = 0.900$ ($SE = 0.068$, 95\% CI [0.767, 1.000]), and
-agreed with the researcher's coding at the same level, $\kappa = 0.900$. The researcher's
-own coding matched the ground truth exactly, $\kappa = 1.000$; because that coding was not
-blind, the evidentiary weight rests on the rater-based coefficient, which falls in the
-range Landis and Koch label almost perfect \cite{landis1977}.
+The independent rater reproduced the system-recorded condition with $\kappa = 0.900$
+($SE = 0.068$, 95\% CI [0.767, 1.000]) and agreed with the researcher's coding at the same
+level; the researcher's own, non-blind coding matched ground truth exactly
+($\kappa = 1.000$). Both disagreements occurred in condition B, where the rater classified
+narrative transcripts as feature-based. The manipulation was therefore not perfectly pure,
+and its impurity ran towards condition A --- a direction that works \textit{against} the
+effect reported below, making that effect a conservative estimate.
 
-The two disagreements are informative and both occurred in condition B, where the
-independent rater classified narrative transcripts as feature-based. The manipulation was
-therefore not perfectly pure, and its impurity ran towards condition A. Since the
-hypothesis of interest concerns a difference between B and the objective-grounded
-conditions, this direction of error works against the effect reported below, making that
-effect a conservative estimate.
-
-\subsection{Instrument Reliability}
-
-Because all four constructs use two-item scales, reliability was estimated with the
-Spearman-Brown coefficient. Purchase intention reached 0.801 (95\% CI [0.551, 1.050],
-average inter-item $r = 0.670$) and perceived usefulness 0.731 ([0.449, 1.013],
-$r = 0.593$). Satisfaction reached 0.689 ([0.413, 0.966], $r = 0.532$), marginally below the
-conventional 0.70 threshold, and perceived trust 0.624 ([0.306, 0.941], $r = 0.454$), clearly
-below it.
-
-The trust figure is reported without adjustment, but two features qualify how it should be
-read. Its confidence interval is wide, spanning 0.306 to 0.941, which reflects the low
-precision obtainable from two items and 90 observations rather than a demonstrably poor
-scale. Its average inter-item correlation of 0.454 sits within the range normally
-considered healthy for a narrow construct, indicating that the two items cohere and that
-the limitation is scale length rather than item content. The implications are taken up in
-Section~\ref{sec:discussion}.
+Spearman-Brown coefficients were 0.801 for purchase intention (95\% CI [0.551, 1.050],
+average inter-item $r = 0.670$), 0.731 for usefulness ([0.449, 1.013], $r = 0.593$), 0.689
+for satisfaction ([0.413, 0.966], $r = 0.532$), and 0.624 for trust ([0.306, 0.941],
+$r = 0.454$). The trust figure is below the conventional 0.70 threshold and is reported
+unadjusted. Two features qualify it: the interval is wide, reflecting the precision
+obtainable from two items and 90 observations, and the inter-item correlation of 0.454 lies
+within the range normally considered healthy for a narrow construct, indicating that the
+constraint is scale length rather than item content.
 
 \subsection{Descriptive Statistics and Assumption Checks}
 
-Table~\ref{tab:desc} reports central tendency and dispersion for all four constructs by
-condition. Perceived trust was highest in condition C and lowest in condition B; purchase
-intention was highest in condition C, with A and B close together. Usefulness and
-satisfaction were uniformly high in all three conditions.
+Table~\ref{tab:desc} reports central tendency and dispersion by condition. Trust was
+highest in C and lowest in B; purchase intention was highest in C, with A and B close
+together; usefulness and satisfaction were uniformly high.
 
 \begin{table}[htbp]
-\caption{Descriptive Statistics by Condition ($n = 30$ per condition)}
+\caption{Descriptive Statistics by Condition ($n = 30$ each)}
 \begin{center}
-\renewcommand{\arraystretch}{1.1}
+\renewcommand{\arraystretch}{1.05}
 \setlength{\tabcolsep}{4.2pt}
 \begin{tabular}{@{}llccc@{}}
 \toprule
@@ -786,15 +476,15 @@ satisfaction were uniformly high in all three conditions.
 Perceived trust      & A & 4.50 & 4.483 & 0.464 \\
                      & B & 4.00 & 4.050 & 0.635 \\
                      & C & 4.50 & 4.650 & 0.351 \\
-\addlinespace[1.5pt]
+\addlinespace[1pt]
 Purchase intention   & A & 4.00 & 3.783 & 0.773 \\
                      & B & 3.50 & 3.550 & 0.844 \\
                      & C & 4.25 & 4.233 & 0.521 \\
-\addlinespace[1.5pt]
+\addlinespace[1pt]
 Perceived usefulness & A & 5.00 & 4.817 & 0.382 \\
                      & B & 5.00 & 4.500 & 0.841 \\
                      & C & 5.00 & 4.850 & 0.351 \\
-\addlinespace[1.5pt]
+\addlinespace[1pt]
 User satisfaction    & A & 5.00 & 4.700 & 0.502 \\
                      & B & 4.50 & 4.333 & 0.932 \\
                      & C & 5.00 & 4.667 & 0.422 \\
@@ -804,69 +494,53 @@ User satisfaction    & A & 5.00 & 4.700 & 0.502 \\
 \end{center}
 \end{table}
 
-Assumption checks supported the rank-based analysis plan. Shapiro-Wilk tests rejected
-normality in nine of the twelve construct-by-condition cells, including the trust cells in
-conditions A and C ($W = 0.854$ and $W = 0.781$, both $p < .001$) and every usefulness
-and satisfaction cell ($p < .001$ throughout). Levene's test indicated heterogeneity of
-variance for perceived trust, $F(2, 87) = 3.292$, $p = .042$, though not for purchase
-intention, $F(2, 87) = 2.538$, $p = .085$. Usefulness and satisfaction showed strong
-negative skew and a pronounced ceiling effect, with medians of 5.00 in most cells.
+Shapiro-Wilk tests rejected normality in nine of the twelve construct-by-condition cells,
+including the trust cells in A and C ($W = 0.854$, $W = 0.781$, both $p < .001$) and every
+usefulness and satisfaction cell. Levene's test indicated heterogeneity of variance for
+trust, $F(2, 87) = 3.292$, $p = .042$, but not for purchase intention,
+$F(2, 87) = 2.538$, $p = .085$. Usefulness and satisfaction showed pronounced ceiling
+effects, with medians of 5.00 in most cells.
 
 \subsection{Hypothesis Testing}
-
-Fig.~\ref{fig:means} summarises the two primary outcomes and Table~\ref{tab:hyp} the
-complete test statistics.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=\columnwidth]{fig_means}}
 \caption{Perceived trust and purchase intention by condition. Points are means with 95\%
 confidence intervals; brackets mark Holm-corrected Dunn comparisons
-($^{*}p < .05$, $^{**}p < .01$, $^{***}p < .001$). Means are shown for readability, while
-inference rests on the rank-based tests reported in Table~\ref{tab:hyp}.}
+($^{*}p<.05$, $^{**}p<.01$, $^{***}p<.001$). Means are shown for readability; inference
+rests on the rank-based tests in Table~\ref{tab:hyp}.}
 \label{fig:means}
 \end{figure}
 
-\subsubsection{H1: Justification logic and perceived trust}
-A Kruskal-Wallis test found a significant effect of condition on perceived trust,
-$H(2) = 16.57$, $p < .001$, $\varepsilon^{2} = 0.186$, a large effect. Dunn's test with Holm
-correction located the difference: condition B scored below condition A
-($z = 2.713$, $p = .013$, $r_{rb} = -0.397$) and below condition C
-($z = -3.985$, $p < .001$, $r_{rb} = 0.564$), while A and C did not differ
-($z = -1.272$, $p = .203$). H1 is supported, but the direction is the opposite of the
-design intuition that motivated condition B: the warmest, most personal justification
-produced the \textit{lowest} trust of the three.
+\textbf{H1.} Condition affected perceived trust, $H(2) = 16.57$, $p < .001$,
+$\varepsilon^{2} = 0.186$, a large effect. Dunn's test located the difference: B scored
+below A ($z = 2.713$, $p = .013$, $r_{rb} = -0.397$) and below C ($z = -3.985$,
+$p < .001$, $r_{rb} = 0.564$), while A and C did not differ ($z = -1.272$, $p = .203$). H1
+is supported, but the direction reverses the intuition that motivated condition B: the
+warmest justification was trusted least.
 
-\subsubsection{H2: Justification logic and purchase intention}
-Condition also affected purchase intention, $H(2) = 11.88$, $p = .003$,
-$\varepsilon^{2} = 0.133$, a medium-to-large effect. Here the pattern differs. Condition C
-scored above condition A ($z = -2.326$, $p = .040$, $r_{rb} = 0.343$) and above condition B
-($z = -3.365$, $p = .002$, $r_{rb} = 0.492$), whereas A and B did not differ
-($z = 1.039$, $p = .299$). H2 is supported, with a single clear winner.
+\textbf{H2.} Condition also affected purchase intention, $H(2) = 11.88$, $p = .003$,
+$\varepsilon^{2} = 0.133$. Here C scored above A ($z = -2.326$, $p = .040$,
+$r_{rb} = 0.343$) and above B ($z = -3.365$, $p = .002$, $r_{rb} = 0.492$), while A and B
+did not differ ($z = 1.039$, $p = .299$). The two patterns do not coincide: trust was
+jointly highest in A and C, purchase intention highest in C alone.
 
-The two patterns do not coincide. Trust was jointly highest in A and C, whereas purchase
-intention was highest in C alone.
+\textbf{H3.} Trust and purchase intention were positively but weakly associated,
+$\rho = 0.229$, $p = .030$, 95\% CI [0.025, 0.437] from 1{,}000 bootstrap replicates; the
+parametric counterpart did not reach significance, $r = 0.161$, $p = .129$. Trust accounts
+for roughly five per cent of the variance in purchase intention.
 
-\subsubsection{H3: Trust and purchase intention}
-Perceived trust and purchase intention were positively but weakly associated,
-$\rho = 0.229$, $p = .030$, 95\% CI [0.025, 0.437] from 1{,}000 bootstrap replicates. The
-parametric counterpart did not reach significance, $r = 0.161$, $p = .129$. H3 is supported
-in the rank-based test only, and the association is weak: trust accounts for roughly five
-per cent of the variance in purchase intention, and the lower bound of the interval lies
-close to zero.
-
-\subsubsection{H4: Familiarity as moderator}
-A two-way analysis of variance crossing condition with dichotomised familiarity produced no
-evidence of interaction, $F(2, 84) = 0.452$, $p = .638$. The main effect of condition
-persisted, $F(2, 84) = 10.57$, $p < .001$, while familiarity had no main effect,
-$F(1, 84) = 0.039$, $p = .845$. No evidence of moderation was found. Given novice cell
-sizes of 10, 12, and 8 and a Levene test that was itself significant for this design,
-$F(5, 84) = 3.153$, $p = .012$, this result is better read as a limitation of power than as
-evidence of absence.
+\textbf{H4.} A two-way analysis of variance crossing condition with dichotomised
+familiarity produced no evidence of interaction, $F(2, 84) = 0.452$, $p = .638$. The
+condition main effect persisted, $F(2, 84) = 10.57$, $p < .001$; familiarity had none,
+$F(1, 84) = 0.039$, $p = .845$. Given novice cells of 10, 12, and 8 and a significant
+Levene test for this design, $F(5, 84) = 3.153$, $p = .012$, this is better read as a
+limitation of power than as evidence of absence.
 
 \begin{table}[htbp]
 \caption{Summary of Hypothesis Tests}
 \begin{center}
-\renewcommand{\arraystretch}{1.15}
+\renewcommand{\arraystretch}{1.1}
 \setlength{\tabcolsep}{3.4pt}
 \begin{tabular}{@{}p{0.5cm}p{2.35cm}p{1.75cm}p{0.95cm}p{1.35cm}@{}}
 \toprule
@@ -884,21 +558,14 @@ H4 & Two-way ANOVA & $F(2,84)=0.45$, $p=.638$ & --- & No evidence \\
 
 \subsection{Supplementary Analyses}
 
-Two further analyses were run, both exploratory.
-
-First, perceived usefulness and satisfaction were tested against the scale midpoint plus
-one half-point, 3.5, using Wilcoxon signed-rank tests. Both exceeded it decisively:
-usefulness $V = 3909$, $p < .001$, rank-biserial $= 0.952$; satisfaction $V = 3533$,
-$p < .001$, rank-biserial $= 0.933$. This matters as an interpretive safeguard rather than
-as a finding. Participants judged the system useful and satisfying in every condition, so
-the trust differences reported above cannot be attributed to one condition being served by
-a system that simply worked less well.
-
-Second, 77 of the 90 participants (85.6\%) had already smelled the recommended product at
-the time of the questionnaire, a proportion that did not differ significantly across
-conditions, $\chi^{2}(2) = 5.035$, $p = .081$, although it was highest in condition C
-(96.7\%) and lowest in condition B (76.7\%). Sensory access was therefore near-universal,
-which is a consequence of running the study in a store with an open tester area.
+Usefulness and satisfaction both exceeded 3.5 decisively (Wilcoxon signed-rank:
+$V = 3909$, $p < .001$, rank-biserial $= 0.952$; $V = 3533$, $p < .001$, rank-biserial
+$= 0.933$). This is an interpretive safeguard rather than a finding: participants judged
+the system useful and satisfying in every condition, so the trust differences cannot be
+attributed to one condition being served by a system that simply worked less well.
+Separately, 77 of 90 participants (85.6\%) had already smelled the recommended product, a
+proportion that did not differ significantly across conditions,
+$\chi^{2}(2) = 5.035$, $p = .081$.
 
 % ===============================================================
 \section{Discussion}
@@ -907,269 +574,158 @@ which is a consequence of running the study in a store with an open tester area.
 
 \subsection{Why Narrative Justification Lowered Trust (RQ1)}
 
-Justification logic affected perceived trust with a large effect, and the direction was
-the reverse of the intuition that motivated condition B. The warmest and most personal
-justification was trusted least. The finding is stated here without hedging because it is
-the study's principal contribution, not an anomaly to be explained away.
+Justification logic affected trust with a large effect, in the direction opposite to the
+intuition that motivated condition B. The warmest justification was trusted least. This is
+stated without hedging because it is the study's principal contribution.
 
 The most economical account is that emotional narrative weakens the signal of competence.
-Li et al. show that no anthropomorphic style is universally superior: a competent
-interaction style produces more positive consumer responses on cognition-oriented service
-tasks, mediated by agent-mind perception, whereas a warm style prevails on
-emotion-oriented tasks, mediated by experience-mind perception \cite{libaoku2024}. The
-decisive variable is the nature of the \textit{task}, not the nature of the
-\textit{product}. Perfume is hedonic as a product, but selecting one through a
-recommender is an evaluative task: the user is weighing options, assessing fit, and
-deciding. On that reading the observed ordering is exactly what the mind-perception
-account predicts.
+Li et al. show that no anthropomorphic style is universally superior: competent interaction
+styles produce more positive responses on cognition-oriented tasks, mediated by agent-mind
+perception, whereas warm styles prevail on emotion-oriented tasks, mediated by
+experience-mind perception \cite{libaoku2024}. The decisive variable is the nature of the
+\textit{task}, not of the \textit{product}. Perfume is hedonic as a product, but selecting
+one through a recommender is an evaluative task: the user weighs options, assesses fit, and
+decides. On that reading the observed ordering is what the mind-perception account
+predicts.
 
-Two further results converge. Cheng et al. find that exchange relationships strengthen the
-importance of perceived competence on trust, while communal relationships do not amplify
-the effect of warmth \cite{cheng2022}; an in-store purchase consultation is an exchange
-relationship in the plainest sense. Yen and Chiang, examining what predicts trust in
-shopping chatbots, report that neither media richness nor playfulness had a positive
-influence, reasoning that communication with such a chatbot is a functional task
-\cite{yen2021}. The present result extends that logic from conversational decoration to
-the substance of the justification itself.
+Two results converge. Exchange relationships strengthen the importance of perceived
+competence on trust, while communal relationships do not amplify warmth \cite{cheng2022},
+and an in-store purchase consultation is an exchange relationship in the plainest sense.
+Yen and Chiang found that neither media richness nor playfulness raised trust in shopping
+chatbots, reasoning that such communication is a functional task \cite{yen2021}; the
+present result extends that logic from conversational decoration to the substance of the
+justification. That anthropomorphic warmth can backfire outright, through expectancy
+violations caused by inflated efficacy expectations, is separately established
+\cite{crolic2022}.
 
-That anthropomorphic warmth can be counterproductive is also established. Crolic et al.
-trace a negative effect of chatbot anthropomorphism to expectancy violations caused by
-inflated pre-encounter expectations of efficacy \cite{crolic2022}. The mechanism differs
-from ours, but the moral is shared: humanlike framing raises expectations that the system
-must then meet.
+The finding stands in apparent tension with the anchor study, which reports user-based
+explanations as more effective than attribute-based ones in hedonic domains
+\cite{chen2024}. Two differences reconcile the accounts. Their explanations accompany a
+static display, whereas ours are sustained across a ten-question dialogue; in conversation
+the user accumulates evidence about the system's competence, not only about the product,
+and a narrative that reads as evocative once can read as evasive over twenty messages.
+Further, user-based and narrative-based explanations are not the same object: the former
+carries social proof, the latter carries no evidence at all. Condition B isolates affect
+from evidence in a way user-based explanation does not. Seen thus the result is less exotic
+than it appears: personalising explanations has previously been found detrimental to
+effectiveness even while improving satisfaction, contrary to the authors' own hypothesis
+\cite{tintarev2012}.
 
-The finding stands in apparent tension with the anchor study. Chen et al. report that
-attribute-based explanations are more effective at enhancing trust in utilitarian domains,
-whereas user-based explanations are more effective in hedonic ones \cite{chen2024}. Two
-differences reconcile the accounts. First, their explanations accompany a static
-recommendation display, whereas ours are sustained across a ten-question dialogue. In
-conversation the user accumulates evidence about the system's competence, not only about
-the product, and a narrative that reads as evocative in a single display can read as
-evasive when maintained over twenty messages. Second, user-based and narrative-based
-explanations are not the same object. A user-based explanation carries social proof; a
-purely narrative one carries no evidence at all, only resonance. Our condition B isolates
-affect from evidence in a way that user-based explanation does not.
+Feature-based and comparative-based justification did not differ on trust. Both anchor the
+recommendation in something checkable --- composition in one case, position relative to
+named alternatives in the other --- so either displays command of the domain, which is what
+an evaluative task rewards. This accords with feature-importance explanations outperforming
+counterfactual ones for non-experts \cite{brito2023} and with the premise that explanation
+type determines which trusting belief is engaged \cite{wang2007}.
 
-Seen this way the result is less exotic than it first appears. Tintarev and Masthoff
-reported that personalising feature-based explanations was detrimental to effectiveness
-even as it plausibly improved satisfaction, contrary to their own hypothesis
-\cite{tintarev2012}. A more appealing explanation that is a less useful one is a
-documented pattern, not a novelty.
+\subsection{A Thin Bridge to Purchase Intention (RQ2)}
 
-\subsection{Why the Two Objective-Grounded Conditions Converged}
-
-Feature-based and comparative-based justification did not differ on trust
-($p = .203$). Both anchor the recommendation in something checkable: A in the
-composition of the fragrance, C in its position relative to named alternatives. Either
-way the system displays command of the domain, which is what an evaluative task rewards.
-This is consistent with de Brito Duarte et al., who found feature-importance explanations
-to yield higher trust than counterfactual ones among non-expert users \cite{brito2023},
-and with the broader premise that explanation type determines which component of trust is
-engaged \cite{wang2007}.
-
-\subsection{A Thin Bridge from Trust to Purchase Intention (RQ2)}
-
-Trust and purchase intention were positively but weakly associated, and the parametric
-coefficient did not reach significance. The design does not license a causal claim, and
-the correct summary is that a weak positive association was observed.
-
-The more informative evidence is structural. Trust was jointly highest in conditions A and
-C, whereas purchase intention was highest in C alone. Were trust the principal route to
-purchase intention, condition A should have followed condition C upward. It did not. The
-implication is that comparative justification acts on purchase intention through a channel
-that does not pass through trust, most plausibly by reducing decision uncertainty at the
-point of choice. Celar and Byrne provide direct support: counterfactual explanations
-improved the accuracy of participants' \textit{own} decisions more than causal ones did
-\cite{celar2023}. Contrastive information helps people decide for themselves, which is
-precisely what is needed when the decisive attribute cannot be conveyed by the interface.
-
-This is consistent with models in which trust is one channel among several. Li et al.
-model warmth and competence as feeding both trust and chatbot overload, with both
-pathways shaping service evaluation and subsequent purchase \cite{liyang2025}. It also
-qualifies the trust-centric reading of the chatbot literature, in which the trust to
-purchase intention chain has been validated as the primary mechanism \cite{yen2021}. A
-further caution applies in the other direction: maximal trust is not the design goal, and
-explanation interfaces can produce agreement that has not been deliberated
+The association between trust and purchase intention was weak and the parametric
+coefficient non-significant, so no causal claim is made. The more informative evidence is
+structural: trust was jointly highest in A and C, whereas purchase intention was highest in
+C alone. Were trust the principal route, A should have followed C upward. It did not.
+Comparative justification therefore appears to act on purchase intention through a channel
+that bypasses trust, most plausibly by reducing decision uncertainty at the point of
+choice. Celar and Byrne provide direct support: counterfactual explanations improved the
+accuracy of participants' \textit{own} decisions more than causal ones \cite{celar2023}.
+Contrastive information helps people decide for themselves, which is what is needed when
+the decisive attribute cannot be conveyed by the interface. This is consistent with models
+treating trust as one channel among several \cite{liyang2025} and qualifies the
+trust-centric reading of the chatbot literature \cite{yen2021}; maximal trust is in any
+case not the goal, since explanations can produce undeliberated agreement
 \cite{naiseh2021}.
 
-\subsection{No Evidence of Moderation by Familiarity (RQ3)}
+\subsection{No Evidence of Moderation (RQ3)}
 
-The interaction between condition and familiarity was far from significant. This is
-reported as an absence of evidence rather than evidence of absence, and the distinction
-matters here because the theoretical grounds for expecting moderation were strong. Bayer
-et al. found that domain expertise reduces trust in explainable decision support, and,
-more pointedly, that the effect of explanation on trusting intention is itself moderated
-by expertise, with high-knowledge users trusting more when an explanation is provided and
-low-knowledge users not \cite{bayer2023}.
+The interaction was far from significant, and this is an absence of evidence rather than
+evidence of absence. The theoretical grounds for expecting moderation were strong: domain
+expertise reduces trust in explainable decision support, and the effect of explanation on
+trusting intention is itself moderated by expertise \cite{bayer2023}. Two design features
+limit the conclusion. The novice cells held 10, 12, and 8 participants, too few to detect a
+plausible interaction, whereas characterising how explanation type interacts with
+familiarity required four experiments and 731 participants \cite{celar2023}. Dichotomising
+three familiarity levels may also have blunted a gradient.
 
-Two features of the present design limit what can be concluded. The novice cells contained
-10, 12, and 8 participants, which is too few to detect an interaction of plausible size;
-by comparison, Celar and Byrne required four experiments and 731 participants to
-characterise how explanation type interacts with domain familiarity \cite{celar2023}.
-Dichotomising three familiarity levels into two may also have blunted a gradient, since
-enthusiasts and collectors were merged despite differing in depth of experience.
+\subsection{Implications}
 
-\subsection{Theoretical Implications}
+Three theoretical implications follow. First, and most substantively, the classification
+governing explanation design may be the type of \textit{task} rather than the type of
+\textit{product}. The literature partitions domains into utilitarian and hedonic
+\cite{chen2024}, \cite{wangx2022}, \cite{varga2024}; these results suggest a cross-cutting
+axis, whether the user's immediate activity is evaluative or experiential. Perfume is
+hedonic on the first axis and evaluative on the second, and the second predicted the
+outcome \cite{libaoku2024}. Second, the results give concrete empirical support to the
+claim that explanatory aims can be incompatible \cite{tintarev2012}: the condition
+maximising trust and the condition maximising purchase intention differed. Third, a
+comparable three-condition CRS study found no significant effect on any subjective
+construct while manipulating preference elicitation \cite{ziegfeld2025}; the contrast
+suggests, without establishing, that justification logic is a stronger lever on subjective
+experience than elicitation method, consistent with the observation that XAI effectiveness
+varies across applications \cite{rong2024}.
 
-Three implications follow.
-
-First, and most substantively, the classification that governs explanation design may be
-the type of \textit{task} rather than the type of \textit{product}. The XAI and marketing
-literatures typically partition domains into utilitarian and hedonic \cite{chen2024},
-\cite{wangx2022}, \cite{varga2024}. Our result suggests a cross-cutting axis: whether the
-user's immediate activity is evaluative or experiential. Perfume is hedonic on the first
-axis and evaluative on the second, and it was the second that predicted the outcome
-\cite{libaoku2024}. This reframing is testable, and Section~\ref{sec:conclusion} proposes
-how.
-
-Second, the results provide empirical support for the claim that explanatory aims can be
-incompatible \cite{tintarev2012}. Here the incompatibility is concrete rather than
-theoretical: the condition maximising trust and the condition maximising purchase
-intention were not the same, and the association between the two outcomes was weak.
-
-Third, the study speaks to the sensitivity of subjective measures in CRS research.
-Ziegfeld et al., using a comparable three-condition between-subjects design, found no
-significant effects on any of ten questionnaire-based user experience constructs, while
-objective measures did differ \cite{ziegfeld2025}. Their manipulation concerned preference
-elicitation method; ours concerned justification logic. The contrast suggests, without
-establishing, that how a system justifies itself is a stronger lever on subjective
-experience than how it gathers preferences. This aligns with the observation that XAI
-effectiveness is not consistent across applications and requires domain-specific
-evaluation \cite{rong2024}.
-
-\subsection{Practical Implications}
-
-For designers of conversational recommenders, three guidelines follow.
-
-If the objective is trust, ground the justification in something the user can check ---
-attributes or explicit comparisons --- even in a domain that feels emotional. The
-temptation to humanise is strongest precisely where it appears most fitting, and that is
-where it cost the most here.
-
-If the objective is conversion, comparative justification was the strongest of the three
-and was also among the strongest for trust. Notably, this reproduces an existing design
-guideline derived from user-centric evaluation: explaining why an item is recommended
-increases transparency, while explaining trade-offs increases persuasion \cite{pu2012}.
-Our conditions A and C are close instances of those two prescriptions, and the outcome
-pattern matches.
-
-Most importantly, the two objectives are not served by the same design. This is a genuine
-trade-off rather than a ranking, and a system optimising for conversion should not be
-assumed to be optimising for trust.
-
-One caveat guards against over-reading. Narrative justification was not judged useless:
-usefulness and satisfaction were high in all three conditions and well above the scale
-midpoint. Condition B underperformed specifically on trust, not globally.
+Practically, if the objective is trust, ground the justification in something checkable
+even in a domain that feels emotional; the temptation to humanise is strongest exactly
+where it proved most costly here. If the objective is conversion, comparative justification
+was strongest, reproducing an existing guideline that explaining why increases transparency
+while explaining trade-offs increases persuasion \cite{pu2012}. Crucially the two
+objectives are not served by the same design. One caveat guards against over-reading:
+usefulness and satisfaction were high in all conditions, so condition B underperformed
+specifically on trust, not globally.
 
 \subsection{Limitations}
-\label{sec:limits}
 
-Several limitations qualify these conclusions.
-
-\textit{The manipulation is broader than the explanation.} Each system prompt governs the
-whole interaction, so the ten elicitation questions differed by condition alongside the
-final justification. The study therefore manipulates justification logic as a coherent
-whole and cannot separate the contribution of explanation content from that of
-conversational framing. Disentangling the two requires a design that holds elicitation
-constant while varying only the explanation.
-
-\textit{Item equivalence across conditions was not verified.} Because the preference record
-passed to the backend is produced by a dialogue that differs by condition, the recommended
-products may not be distributed identically across conditions, and the distribution was
-not checked against the session logs. The recommendation algorithm was invariant; the
-recommended items are not demonstrated to be.
-
-\textit{Measurement.} The two-item trust scale fell below the conventional reliability
-threshold. Measurement error attenuates observed effects, so the large effect in H1 is
-plausibly a conservative estimate and the weak association in H3 plausibly an
-underestimate; nevertheless a multi-item instrument is required for confident inference.
-Usefulness and satisfaction showed pronounced ceiling effects, limiting their
-discriminating power.
-
-\textit{Statistical approach.} The main analyses are rank-based while the moderation test
-is parametric, an inconsistency adopted for want of an established rank-based test of a
-two-factor interaction.
-
-\textit{Design asymmetry.} The closing message in conditions A and C invited participants
-to smell the fragrances at the tester area, whereas condition B contained no such
-invitation. The resulting proportions did not differ significantly, but the asymmetry is a
-flaw in the materials rather than a feature of the manipulation.
-
+\textit{The manipulation is broader than the explanation.} Each prompt governs the whole
+interaction, so elicitation differed by condition alongside the justification; separating
+the two requires a design holding elicitation constant. \textit{Item equivalence was not
+verified.} Because the preference record is produced by a dialogue that differs by
+condition, recommended products may not be distributed identically, and this was not
+checked against session logs. \textit{Measurement.} The two-item trust scale fell below the
+conventional threshold; measurement error attenuates effects, so H1 is plausibly
+conservative and H3 plausibly an underestimate, but a multi-item instrument is needed.
+Usefulness and satisfaction showed ceiling effects. \textit{Statistical approach.} Main
+analyses are rank-based while the moderation test is parametric. \textit{Design asymmetry.}
+Conditions A and C invited participants to the tester area and B did not; the resulting
+proportions did not differ significantly, but this is a flaw in the materials.
 \textit{Generalisation.} Data come from one store, one brand, and 90 participants in a
-single country, with age and gender unrecorded, so group equivalence could be verified
-only on familiarity. Sensory access was near-universal because the tester area was open
-throughout; conclusions therefore describe users who \textit{could} smell the product, and
-may not transfer to purely online settings where that option is absent.
+single country, with age and gender unrecorded. Sensory access was near-universal, so
+conclusions describe users who \textit{could} smell the product and may not transfer to
+purely online settings.
 
 % ===============================================================
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 % ===============================================================
 
-\subsection{Conclusion}
-
-This paper asked whether the kind of justification a conversational recommender offers
-changes how users respond to it, in a domain whose decisive attribute cannot be conveyed
-through an interface. A between-subjects experiment with 90 participants, run in a
-physical perfume store with an LLM-driven agent whose recommendation backend was held
-constant, gives three answers.
-
-Justification logic affects both perceived trust and purchase intention (RQ1), with a
-large effect on the former and a medium-to-large effect on the latter. The direction is
-the informative part: narrative justification, designed to be the warmest and most
-personal, produced the lowest trust of the three conditions, while comparative
-justification produced the highest purchase intention. Trust is weakly associated with
+Justification logic affects both perceived trust and purchase intention (RQ1), with a large
+and a medium-to-large effect. The direction is the informative part: narrative
+justification, designed to be the warmest, produced the lowest trust, while comparative
+justification produced the highest purchase intention. Trust is only weakly associated with
 purchase intention (RQ2), and the structure of the results indicates that comparative
-justification raises purchase intention through a route that does not pass through trust.
-No evidence of moderation by perfume familiarity was found (RQ3), a result better read as
-a limitation of statistical power than as evidence of absence.
+justification raises purchase intention through a route bypassing trust. No evidence of
+moderation by familiarity was found (RQ3), better read as a limitation of power.
 
 The central lesson is that a product being hedonic does not make an emotional justification
-the right one. What appears to govern the response is the nature of the user's task rather
-than the nature of the product, and choosing a perfume through a recommender is an
-evaluative task. A second lesson is that the two design objectives examined here are not
-served by the same condition: trust was highest under feature-based and comparative-based
-justification alike, whereas purchase intention was highest under comparative
-justification alone. Designers of conversational recommenders in sensory domains face a
-real trade-off, not a ranking.
+the right one; what governs the response appears to be the nature of the user's task, and
+choosing a perfume through a recommender is an evaluative task. The second is that the two
+design objectives are not served by the same condition, so designers of conversational
+recommenders in sensory domains face a trade-off rather than a ranking.
 
-\subsection{Future Work}
-
-Four directions follow directly from the limitations.
-
-\textit{Separate content from framing.} The manipulation here governed the whole
-interaction. A design that holds preference elicitation constant while varying only the
-final justification would isolate the contribution of explanation content, and would
-establish whether the effect reported here originates in what the system says at the point
-of recommendation or in how it has been speaking all along.
-
-\textit{Measure trust dimensionally.} The mechanism proposed in
-Section~\ref{sec:discussion} makes a specific and testable prediction: narrative
-justification should depress competence beliefs in particular, while leaving benevolence
-beliefs intact or even raising them. An aggregate two-item scale cannot test this. Wang and
-Benbasat's demonstration that different explanation types engage different trusting beliefs
-\cite{wang2007} supplies the appropriate instrument design, and adopting it would convert
-the present interpretation into a directly falsifiable claim.
-
-\textit{Test hybrid justifications.} If narrative content undermines trust when it stands
-alone, it does not follow that it undermines trust when it is attached to a factual base.
-Feature-plus-narrative and comparison-plus-narrative conditions would establish whether
-narrative functions as a complement rather than a substitute. Work that equips
-conversational recommenders to capture a user's situation and emotional state from
-dialogue \cite{yang2025} offers a natural foundation for such conditions, and interactive
-explanation interfaces that let users scrutinise or request alternative explanatory
-material \cite{ziegler2023} would allow the hybrid to be assembled by the user rather than
-fixed by the designer.
-
-\textit{Establish the boundary of the task-based account.} The proposal that task type
-rather than product type governs the effect predicts that the advantage of
-objective-grounded justification should weaken as the user's activity becomes more
-experiential and less evaluative, and that the advantage of comparative justification
-should shrink in domains whose decisive attributes can be transmitted digitally.
-Replication across domains that differ in transmissibility, such as music and coffee,
-alongside larger and familiarity-balanced samples adequate for interaction tests, would
-put both predictions at risk. Finer-grained dialogue measures \cite{siro2023} would
-complement the attitudinal instruments used here.
+Four directions follow from the limitations. Holding elicitation constant while varying only
+the final justification would separate explanation content from conversational framing.
+Measuring trust dimensionally would convert the proposed mechanism into a falsifiable
+prediction, that narrative justification depresses competence beliefs specifically while
+leaving benevolence intact; the demonstration that explanation types engage different
+trusting beliefs \cite{wang2007} supplies the instrument design. Hybrid conditions would
+establish whether narrative functions as a complement rather than a substitute when
+attached to a factual base, for which conversational recommenders that capture situation
+and emotional state from dialogue \cite{yang2025} offer a foundation and interactive
+explanation interfaces \cite{ziegler2023} a means of letting users assemble the hybrid
+themselves. Finally, the task-based account predicts that the advantage of
+objective-grounded justification should weaken as the activity becomes more experiential,
+and that the advantage of comparative justification should shrink where decisive attributes
+are digitally transmissible; replication across domains differing in transmissibility, with
+larger familiarity-balanced samples and finer-grained dialogue measures \cite{siro2023},
+would put both predictions at risk.
 
 
 \begin{thebibliography}{00}
