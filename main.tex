@@ -1101,11 +1101,77 @@ only on familiarity. Sensory access was near-universal because the tester area w
 throughout; conclusions therefore describe users who \textit{could} smell the product, and
 may not transfer to purely online settings where that option is absent.
 
+% ===============================================================
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
-\PH{Section VII to be written next.}
-
 % ===============================================================
+
+\subsection{Conclusion}
+
+This paper asked whether the kind of justification a conversational recommender offers
+changes how users respond to it, in a domain whose decisive attribute cannot be conveyed
+through an interface. A between-subjects experiment with 90 participants, run in a
+physical perfume store with an LLM-driven agent whose recommendation backend was held
+constant, gives three answers.
+
+Justification logic affects both perceived trust and purchase intention (RQ1), with a
+large effect on the former and a medium-to-large effect on the latter. The direction is
+the informative part: narrative justification, designed to be the warmest and most
+personal, produced the lowest trust of the three conditions, while comparative
+justification produced the highest purchase intention. Trust is weakly associated with
+purchase intention (RQ2), and the structure of the results indicates that comparative
+justification raises purchase intention through a route that does not pass through trust.
+No evidence of moderation by perfume familiarity was found (RQ3), a result better read as
+a limitation of statistical power than as evidence of absence.
+
+The central lesson is that a product being hedonic does not make an emotional justification
+the right one. What appears to govern the response is the nature of the user's task rather
+than the nature of the product, and choosing a perfume through a recommender is an
+evaluative task. A second lesson is that the two design objectives examined here are not
+served by the same condition: trust was highest under feature-based and comparative-based
+justification alike, whereas purchase intention was highest under comparative
+justification alone. Designers of conversational recommenders in sensory domains face a
+real trade-off, not a ranking.
+
+\subsection{Future Work}
+
+Four directions follow directly from the limitations.
+
+\textit{Separate content from framing.} The manipulation here governed the whole
+interaction. A design that holds preference elicitation constant while varying only the
+final justification would isolate the contribution of explanation content, and would
+establish whether the effect reported here originates in what the system says at the point
+of recommendation or in how it has been speaking all along.
+
+\textit{Measure trust dimensionally.} The mechanism proposed in
+Section~\ref{sec:discussion} makes a specific and testable prediction: narrative
+justification should depress competence beliefs in particular, while leaving benevolence
+beliefs intact or even raising them. An aggregate two-item scale cannot test this. Wang and
+Benbasat's demonstration that different explanation types engage different trusting beliefs
+\cite{wang2007} supplies the appropriate instrument design, and adopting it would convert
+the present interpretation into a directly falsifiable claim.
+
+\textit{Test hybrid justifications.} If narrative content undermines trust when it stands
+alone, it does not follow that it undermines trust when it is attached to a factual base.
+Feature-plus-narrative and comparison-plus-narrative conditions would establish whether
+narrative functions as a complement rather than a substitute. Work that equips
+conversational recommenders to capture a user's situation and emotional state from
+dialogue \cite{yang2025} offers a natural foundation for such conditions, and interactive
+explanation interfaces that let users scrutinise or request alternative explanatory
+material \cite{ziegler2023} would allow the hybrid to be assembled by the user rather than
+fixed by the designer.
+
+\textit{Establish the boundary of the task-based account.} The proposal that task type
+rather than product type governs the effect predicts that the advantage of
+objective-grounded justification should weaken as the user's activity becomes more
+experiential and less evaluative, and that the advantage of comparative justification
+should shrink in domains whose decisive attributes can be transmitted digitally.
+Replication across domains that differ in transmissibility, such as music and coffee,
+alongside larger and familiarity-balanced samples adequate for interaction tests, would
+put both predictions at risk. Finer-grained dialogue measures \cite{siro2023} would
+complement the attitudinal instruments used here.
+
+
 \begin{thebibliography}{00}
 
 \bibitem{jannach2021}
