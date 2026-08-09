@@ -729,9 +729,176 @@ corresponding caution.
 
 All analyses were conducted in JASP v0.97.1.
 
+% ===============================================================
 \section{Results}
 \label{sec:results}
-\PH{Section V to be written next.}
+% ===============================================================
+
+\subsection{Manipulation Check}
+
+Agreement on the 30 blind-coded transcripts was high. The independent rater reproduced the
+system-recorded condition with $\kappa = 0.900$ ($SE = 0.068$, 95\% CI [0.767, 1.000]), and
+agreed with the researcher's coding at the same level, $\kappa = 0.900$. The researcher's
+own coding matched the ground truth exactly, $\kappa = 1.000$; because that coding was not
+blind, the evidentiary weight rests on the rater-based coefficient, which falls in the
+range Landis and Koch label almost perfect \cite{landis1977}.
+
+The two disagreements are informative and both occurred in condition B, where the
+independent rater classified narrative transcripts as feature-based. The manipulation was
+therefore not perfectly pure, and its impurity ran towards condition A. Since the
+hypothesis of interest concerns a difference between B and the objective-grounded
+conditions, this direction of error works against the effect reported below, making that
+effect a conservative estimate.
+
+\subsection{Instrument Reliability}
+
+Because all four constructs use two-item scales, reliability was estimated with the
+Spearman-Brown coefficient. Purchase intention reached 0.801 (95\% CI [0.551, 1.050],
+average inter-item $r = 0.670$) and perceived usefulness 0.731 ([0.449, 1.013],
+$r = 0.593$). Satisfaction reached 0.689 ([0.413, 0.966], $r = 0.532$), marginally below the
+conventional 0.70 threshold, and perceived trust 0.624 ([0.306, 0.941], $r = 0.454$), clearly
+below it.
+
+The trust figure is reported without adjustment, but two features qualify how it should be
+read. Its confidence interval is wide, spanning 0.306 to 0.941, which reflects the low
+precision obtainable from two items and 90 observations rather than a demonstrably poor
+scale. Its average inter-item correlation of 0.454 sits within the range normally
+considered healthy for a narrow construct, indicating that the two items cohere and that
+the limitation is scale length rather than item content. The implications are taken up in
+Section~\ref{sec:discussion}.
+
+\subsection{Descriptive Statistics and Assumption Checks}
+
+Table~\ref{tab:desc} reports central tendency and dispersion for all four constructs by
+condition. Perceived trust was highest in condition C and lowest in condition B; purchase
+intention was highest in condition C, with A and B close together. Usefulness and
+satisfaction were uniformly high in all three conditions.
+
+\begin{table}[htbp]
+\caption{Descriptive Statistics by Condition ($n = 30$ per condition)}
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Construct} & \textbf{Cond.} & \textbf{Mdn} & \textbf{M} & \textbf{SD} \\
+\midrule
+Perceived trust      & A & 4.50 & 4.483 & 0.464 \\
+                     & B & 4.00 & 4.050 & 0.635 \\
+                     & C & 4.50 & 4.650 & 0.351 \\
+\addlinespace[1.5pt]
+Purchase intention   & A & 4.00 & 3.783 & 0.773 \\
+                     & B & 3.50 & 3.550 & 0.844 \\
+                     & C & 4.25 & 4.233 & 0.521 \\
+\addlinespace[1.5pt]
+Perceived usefulness & A & 5.00 & 4.817 & 0.382 \\
+                     & B & 5.00 & 4.500 & 0.841 \\
+                     & C & 5.00 & 4.850 & 0.351 \\
+\addlinespace[1.5pt]
+User satisfaction    & A & 5.00 & 4.700 & 0.502 \\
+                     & B & 4.50 & 4.333 & 0.932 \\
+                     & C & 5.00 & 4.667 & 0.422 \\
+\bottomrule
+\end{tabular}
+\label{tab:desc}
+\end{center}
+\end{table}
+
+Assumption checks supported the rank-based analysis plan. Shapiro-Wilk tests rejected
+normality in nine of the twelve construct-by-condition cells, including the trust cells in
+conditions A and C ($W = 0.854$ and $W = 0.781$, both $p < .001$) and every usefulness
+and satisfaction cell ($p < .001$ throughout). Levene's test indicated heterogeneity of
+variance for perceived trust, $F(2, 87) = 3.292$, $p = .042$, though not for purchase
+intention, $F(2, 87) = 2.538$, $p = .085$. Usefulness and satisfaction showed strong
+negative skew and a pronounced ceiling effect, with medians of 5.00 in most cells.
+
+\subsection{Hypothesis Testing}
+
+Fig.~\ref{fig:means} summarises the two primary outcomes and Table~\ref{tab:hyp} the
+complete test statistics.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{fig_means}}
+\caption{Perceived trust and purchase intention by condition. Points are means with 95\%
+confidence intervals; brackets mark Holm-corrected Dunn comparisons
+($^{*}p < .05$, $^{**}p < .01$, $^{***}p < .001$). Means are shown for readability, while
+inference rests on the rank-based tests reported in Table~\ref{tab:hyp}.}
+\label{fig:means}
+\end{figure}
+
+\subsubsection{H1: Justification logic and perceived trust}
+A Kruskal-Wallis test found a significant effect of condition on perceived trust,
+$H(2) = 16.57$, $p < .001$, $\varepsilon^{2} = 0.186$, a large effect. Dunn's test with Holm
+correction located the difference: condition B scored below condition A
+($z = 2.713$, $p = .013$, $r_{rb} = -0.397$) and below condition C
+($z = -3.985$, $p < .001$, $r_{rb} = 0.564$), while A and C did not differ
+($z = -1.272$, $p = .203$). H1 is supported, but the direction is the opposite of the
+design intuition that motivated condition B: the warmest, most personal justification
+produced the \textit{lowest} trust of the three.
+
+\subsubsection{H2: Justification logic and purchase intention}
+Condition also affected purchase intention, $H(2) = 11.88$, $p = .003$,
+$\varepsilon^{2} = 0.133$, a medium-to-large effect. Here the pattern differs. Condition C
+scored above condition A ($z = -2.326$, $p = .040$, $r_{rb} = 0.343$) and above condition B
+($z = -3.365$, $p = .002$, $r_{rb} = 0.492$), whereas A and B did not differ
+($z = 1.039$, $p = .299$). H2 is supported, with a single clear winner.
+
+The two patterns do not coincide. Trust was jointly highest in A and C, whereas purchase
+intention was highest in C alone.
+
+\subsubsection{H3: Trust and purchase intention}
+Perceived trust and purchase intention were positively but weakly associated,
+$\rho = 0.229$, $p = .030$, 95\% CI [0.025, 0.437] from 1{,}000 bootstrap replicates. The
+parametric counterpart did not reach significance, $r = 0.161$, $p = .129$. H3 is supported
+in the rank-based test only, and the association is weak: trust accounts for roughly five
+per cent of the variance in purchase intention, and the lower bound of the interval lies
+close to zero.
+
+\subsubsection{H4: Familiarity as moderator}
+A two-way analysis of variance crossing condition with dichotomised familiarity produced no
+evidence of interaction, $F(2, 84) = 0.452$, $p = .638$. The main effect of condition
+persisted, $F(2, 84) = 10.57$, $p < .001$, while familiarity had no main effect,
+$F(1, 84) = 0.039$, $p = .845$. No evidence of moderation was found. Given novice cell
+sizes of 10, 12, and 8 and a Levene test that was itself significant for this design,
+$F(5, 84) = 3.153$, $p = .012$, this result is better read as a limitation of power than as
+evidence of absence.
+
+\begin{table}[htbp]
+\caption{Summary of Hypothesis Tests}
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{@{}p{0.5cm}p{2.35cm}p{1.75cm}p{0.95cm}p{1.35cm}@{}}
+\toprule
+& \textbf{Test} & \textbf{Statistic} & \textbf{Effect} & \textbf{Outcome} \\
+\midrule
+H1 & Kruskal-Wallis, Dunn & $H(2)=16.57$, $p<.001$ & $\varepsilon^{2}=.186$ & Supported; B $<$ A, C \\
+H2 & Kruskal-Wallis, Dunn & $H(2)=11.88$, $p=.003$ & $\varepsilon^{2}=.133$ & Supported; C $>$ A, B \\
+H3 & Spearman & $\rho=.229$, $p=.030$ & CI [.025, .437] & Supported, weak \\
+H4 & Two-way ANOVA & $F(2,84)=0.45$, $p=.638$ & --- & No evidence \\
+\bottomrule
+\end{tabular}
+\label{tab:hyp}
+\end{center}
+\end{table}
+
+\subsection{Supplementary Analyses}
+
+Two further analyses were run, both exploratory.
+
+First, perceived usefulness and satisfaction were tested against the scale midpoint plus
+one half-point, 3.5, using Wilcoxon signed-rank tests. Both exceeded it decisively:
+usefulness $V = 3909$, $p < .001$, rank-biserial $= 0.952$; satisfaction $V = 3533$,
+$p < .001$, rank-biserial $= 0.933$. This matters as an interpretive safeguard rather than
+as a finding. Participants judged the system useful and satisfying in every condition, so
+the trust differences reported above cannot be attributed to one condition being served by
+a system that simply worked less well.
+
+Second, 77 of the 90 participants (85.6\%) had already smelled the recommended product at
+the time of the questionnaire, a proportion that did not differ significantly across
+conditions, $\chi^{2}(2) = 5.035$, $p = .081$, although it was highest in condition C
+(96.7\%) and lowest in condition B (76.7\%). Sensory access was therefore near-universal,
+which is a consequence of running the study in a store with an open tester area.
 
 \section{Discussion}
 \label{sec:discussion}
