@@ -79,26 +79,24 @@ email address or ORCID}
 
 \begin{abstract}
 Explanations are widely assumed to increase user trust in AI-based recommender systems,
-yet evidence indicates that the effect depends on the kind of explanation given rather
-than on its presence. Comparative evidence on explanation types is scarce in
-conversational recommender systems and almost absent in sensory-hedonic domains, where
-the defining product attribute cannot be conveyed through a screen. This paper reports a
-between-subjects experiment with 90 participants, 30 per condition, conducted in a
-physical perfume store with an agent in which a large language model handles dialogue
-while a knowledge-graph embedding backend selects the items. Three justification logics
-were set by system-prompt conditioning without fine-tuning: feature-based,
-narrative-based, and comparative-based. Justification logic significantly affected both
-perceived trust and purchase intention, with a large and a medium-to-large effect
-respectively. Contrary to the design intuition that warmer explanations build trust,
-narrative justification produced the lowest trust, significantly below both
-objective-grounded conditions, whereas comparative justification produced the highest
-purchase intention. The association between trust and purchase intention was positive but
-weak (Spearman rho = 0.229, p = 0.030), and no evidence of moderation by perfume
-familiarity was found. Because trust was jointly highest under feature-based and
+yet the effect depends on the kind of explanation given rather than on its presence.
+Comparative evidence on explanation types is scarce in conversational recommender systems
+and almost absent in sensory-hedonic domains, where the defining product attribute cannot
+be conveyed through a screen. This paper reports a between-subjects experiment with 90
+participants, 30 per condition, conducted in a physical perfume store with an agent in
+which a large language model handles dialogue while a knowledge-graph embedding backend
+selects the items. Three justification logics were set by system-prompt conditioning:
+feature-based, narrative-based, and comparative-based. Justification logic significantly
+affected both perceived trust and purchase intention, with a large and a medium-to-large
+effect respectively. Contrary to the design intuition that warmer explanations build
+trust, narrative justification produced the lowest trust, whereas comparative
+justification produced the highest purchase intention. Trust and purchase intention were
+only weakly associated (Spearman rho = 0.229, p = 0.030), and no evidence of moderation by
+perfume familiarity was found. Because trust was jointly highest under feature-based and
 comparative justification while purchase intention was highest under comparative
-justification alone, the two design objectives are not served by the same condition. The
-results suggest that what governs the response is the evaluative nature of the user's
-task rather than the hedonic nature of the product.
+justification alone, the two design objectives are not served by the same condition. What
+governs the response appears to be the evaluative nature of the user's task rather than
+the hedonic nature of the product.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -240,7 +238,7 @@ preferences, and verbalises the justification, while a conversational-recommenda
 knowledge graph embedding (CR-HKGE) backend selects the items (Fig.~\ref{fig:arch}).
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{fig_architecture}}
+\centerline{\includegraphics[width=0.92\columnwidth]{fig_architecture}}
 \caption{System architecture. Item selection is delegated to the backend, whose scoring is
 identical in every condition; the condition is set once, at the system-prompt layer, and
 governs both elicitation and justification.}
@@ -301,17 +299,17 @@ It is closest to the user-based explanations found more effective in hedonic dom
 \cite{chen2024}, differing in one respect examined later: user-based explanations carry
 social proof, purely narrative ones carry none.
 
-The manipulated variable is therefore the \textit{justification logic}, and it governs the
-whole interaction: each prompt instructs the agent to hold its assigned logic ``from your
-first greeting to your final closing message,'' so the ten elicitation questions are framed
-differently in each condition, as is the final explanation. This is deliberate --- a system
-whose framing contradicted its own explanations would be incoherent --- but its cost is that
-explanation content cannot be separated from conversational framing. The contrast is visible
-in how the logics render the same product: A produced ``\textit{it belongs to the aquatic
-family with green and fresh-spicy as its main character}''; B, ``\textit{picture a fresh
-scent flowing gently, like morning dew}''; C, ``\textit{it is the freshest of the three}''.
-One asymmetry bears on a later analysis: the closing messages in A and C invite the user to
-smell the fragrances at the tester area, whereas B does not.
+The manipulated variable is therefore the \textit{justification logic}, and each prompt
+instructs the agent to hold its assigned logic ``from your first greeting to your final
+closing message,'' so the ten elicitation questions are framed differently in each
+condition, as is the final explanation. This is deliberate --- a system whose framing
+contradicted its own explanations would be incoherent --- but its cost is that explanation
+content cannot be separated from conversational framing. The contrast is visible in how the
+logics render the same product: A produced ``\textit{it belongs to the aquatic family with
+green and fresh-spicy as its main character}''; B, ``\textit{picture a fresh scent flowing
+gently, like morning dew}''; C, ``\textit{it is the freshest of the three}''. One asymmetry
+bears on a later analysis: the closing messages in A and C invite the user to smell the
+fragrances at the tester area, whereas B does not.
 
 \subsection{Design, Participants, and Procedure}
 
@@ -322,14 +320,13 @@ characteristics and carryover; the cost of avoiding this is reduced power for th
 interaction test.
 
 Familiarity was recorded at the first elicitation question and recruitment was
-quota-balanced across its three levels: 30 beginners, 30 enthusiasts, 30 collectors. For
-analysis these were dichotomised, beginners coded \textit{novice} ($n = 30$), enthusiasts
-with collectors coded \textit{enthusiast} ($n = 60$), on the construct ground that what
-separates the groups is command of olfactory vocabulary, and condition A rests entirely on
-that vocabulary. The two-to-one imbalance is therefore a consequence of the coding decision
-rather than of recruitment, but the novice cells are small --- 10, 12, and 8 in A, B, and C.
-Familiarity was nonetheless evenly distributed, $\chi^{2}(2) = 1.200$, $p = .549$,
-Cram\'{e}r's $V = 0.116$.
+quota-balanced across its three levels: 30 beginners, 30 enthusiasts, 30 collectors. These
+were dichotomised for analysis, beginners coded \textit{novice} ($n = 30$) and enthusiasts
+with collectors coded \textit{enthusiast} ($n = 60$), on the ground that what separates the
+groups is command of olfactory vocabulary, on which condition A rests entirely. The
+two-to-one imbalance therefore follows from the coding decision rather than recruitment,
+though the novice cells are small --- 10, 12, and 8. Familiarity was nonetheless evenly
+distributed, $\chi^{2}(2) = 1.200$, $p = .549$, Cram\'{e}r's $V = 0.116$.
 
 A session proceeds through greeting and consent, elicitation, presentation of three ranked
 perfumes with the condition-appropriate explanation, and the questionnaire. Elicitation
@@ -402,13 +399,15 @@ construct, indicating the constraint is scale length rather than item content.
 Trust was highest in condition C ($M = 4.65$, $SD = 0.35$) and lowest in B ($M = 4.05$,
 $SD = 0.64$), with A intermediate ($M = 4.48$, $SD = 0.46$). Purchase intention was highest
 in C ($M = 4.23$, $SD = 0.52$) against A ($M = 3.78$, $SD = 0.77$) and B ($M = 3.55$,
-$SD = 0.84$). Usefulness and satisfaction were uniformly high, with means between 4.33 and
-4.85. Shapiro-Wilk tests rejected normality in nine of the twelve construct-by-condition
-cells, and Levene's test indicated heterogeneity of variance for trust,
-$F(2, 87) = 3.292$, $p = .042$.
+$SD = 0.84$). Usefulness and satisfaction were uniformly high in every condition, with means between
+4.33 and 4.85, and both exceeded the 3.5 reference value decisively (Wilcoxon: $V = 3909$
+and $V = 3533$, both $p < .001$), so the trust differences cannot be attributed to one
+condition being served by a system that simply worked less well. Shapiro-Wilk tests
+rejected normality in nine of the twelve construct-by-condition cells, and Levene's test
+indicated heterogeneity of variance for trust, $F(2, 87) = 3.292$, $p = .042$.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{fig_means}}
+\centerline{\includegraphics[width=0.94\columnwidth]{fig_means}}
 \caption{Perceived trust and purchase intention by condition. Points are means with 95\%
 confidence intervals; brackets mark Holm-corrected Dunn comparisons
 ($^{*}p<.05$, $^{**}p<.01$, $^{***}p<.001$).}
@@ -446,10 +445,8 @@ H4 & Two-way ANOVA & $F(2,84)=0.45$, $p=.638$ & --- & No evidence \\
 \end{center}
 \end{table}
 
-Usefulness and satisfaction both exceeded 3.5 decisively (Wilcoxon: $V = 3909$ and
-$V = 3533$, both $p < .001$), so the system was judged useful and satisfying in every
-condition. Separately, 77 of 90 participants (85.6\%) had already smelled the recommended
-product, a proportion that did not differ across conditions.
+Finally, 77 of 90 participants (85.6\%) had already smelled the recommended product, a
+proportion that did not differ across conditions.
 
 \subsection{Why Narrative Justification Lowered Trust}
 
@@ -565,6 +562,7 @@ the task-based account at risk.
 
 
 \begin{thebibliography}{00}
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
 
 \bibitem{jannach2021}
 D. Jannach, A. Manzoor, W. Cai, and L. Chen, ``A survey on conversational
