@@ -1,5 +1,9 @@
 import matplotlib
 matplotlib.use("Agg")
+# Embed TrueType (Type 42) instead of matplotlib's default Type 3 bitmap fonts.
+# IEEE Xplore and EDAS reject Type 3.
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
